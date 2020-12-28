@@ -1,0 +1,11 @@
+.app-container {
+  padding-top: 1em;
+}
+
+.hidden {
+  display: none;
+}
+
+.errors {
+  margin-top: 0.5em;
+}
