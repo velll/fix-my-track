@@ -1,5 +1,6 @@
 
 import * as React from "react";
+import { Activity } from "../lib/activity";
 import { setupMap } from "../map";
 
 class Track extends React.Component<Props, State>  {
@@ -12,17 +13,26 @@ class Track extends React.Component<Props, State>  {
     (window as any).map = setupMap('map', {});
   }
 
-  public render() {
-   return <div className="trackpoint-list">
-            List of all trackpoints
+  public trackpointRow(lat: number, long: number) {
+    return <div>{lat}, {long}</div>;
+  }
 
-            {this.props.trackFile}
+  public render() {
+    console.log(this.props.activity.trackpoints);
+   return <div className="trackpoint-list">
+
+            { this.props.activity.totals.name}
+            { this.props.activity.totals.time}
+
+            List of all trackpoints
+            { this.props.activity.trackpoints.map(point => this.trackpointRow(point.lat, point.long)) }
+
           </div>;
   }
 }
 
 interface Props {
-  trackFile: string
+  activity: Activity
 }
 
 interface State {

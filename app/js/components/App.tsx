@@ -1,11 +1,12 @@
 import * as React from "react";
+import { Activity } from "../lib/activity";
 import { Dropzone } from "./Dropzone";
 import { Track } from "./Track";
 
 class App extends React.Component<Props, State>  {
   constructor(props: Props) {
     super(props);
-    this.state = {trackFile: null, stage: Stage.start};
+    this.state = {activity: null, trackFile: null, stage: Stage.start};
 
     this.processTrack = this.processTrack.bind(this);
   }
@@ -18,12 +19,16 @@ class App extends React.Component<Props, State>  {
     if (stage == Stage.start) {
       return <Dropzone onFileRead={this.processTrack}></Dropzone>;
     } else {
-      return <Track trackFile={this.state.trackFile!}></Track>;
+      return <Track activity={this.state.activity!}></Track>;
     }
   }
 
   processTrack(trackFile: string) {
-    this.setState({stage: Stage.show, trackFile: trackFile});
+    this.setState(_ => ({
+      stage: Stage.show,
+      trackFile: trackFile,
+      activity: Activity.fromTCX(trackFile)
+    }));
   }
 
   public render() {
@@ -36,6 +41,7 @@ interface Props {
 
 interface State {
   trackFile: string | null,
+  activity: Activity | null,
   stage: Stage
 }
 

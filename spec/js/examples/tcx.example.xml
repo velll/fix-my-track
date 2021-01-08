@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TrainingCenterDatabase xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+  <Activities>
+    <Activity Sport="Running">
+      <Id>2020-12-14T10:40:54+00:00</Id>
+      <TotalTimeSeconds>1935.0</TotalTimeSeconds>
+      <DistanceMeters>5469.564798720001</DistanceMeters>
+      <Lap StartTime="2020-12-14T10:40:54+00:00">
+        <TotalTimeSeconds>3788.0</TotalTimeSeconds>
+        <DistanceMeters>8642.998045440001</DistanceMeters>
+        <MaximumSpeed>5.9991873920000005</MaximumSpeed>
+        <Calories>822.9999995259519</Calories>
+        <Track>
+          <Trackpoint>
+            <Time>2020-12-14T10:41:03.651143+00:00</Time>
+            <Position>
+              <LatitudeDegrees>55.97667849903714</LatitudeDegrees>
+              <LongitudeDegrees>37.14587767150644</LongitudeDegrees>
+            </Position>
+            <AltitudeMeters>210.93</AltitudeMeters>
+            <DistanceMeters>14.379666328430176</DistanceMeters>
+          </Trackpoint>
+        </Track>
+      </Lap>
+    </Activity>
+  </Activities>
+</TrainingCenterDatabase>
