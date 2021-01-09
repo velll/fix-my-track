@@ -2,6 +2,11 @@
 import * as React from "react";
 import { Activity } from "../lib/activity";
 import { setupMap } from "../map";
+import { Map } from "./Map";
+import { TrackpointList } from "./TrackpointList";
+import { TrackStats } from "./TrackStats";
+
+import './Track.css';
 
 class Track extends React.Component<Props, State>  {
   constructor(props: Props) {
@@ -9,25 +14,15 @@ class Track extends React.Component<Props, State>  {
     this.state = {};
   }
 
-  public async componentDidMount() {
-    (window as any).map = setupMap('map', {});
-  }
-
-  public trackpointRow(lat: number, long: number) {
-    return <div>{lat}, {long}</div>;
-  }
-
   public render() {
     console.log(this.props.activity.trackpoints);
-   return <div className="trackpoint-list">
-
-            { this.props.activity.totals.name}
-            { this.props.activity.totals.time}
-
-            List of all trackpoints
-            { this.props.activity.trackpoints.map(point => this.trackpointRow(point.lat, point.long)) }
-
-          </div>;
+    return  <div className="track">
+              <Map trackpoints={this.props.activity.trackpoints}></Map>
+              <div className="track-data">
+                <TrackStats sport={this.props.activity.totals.name} time={this.props.activity.totals.time}></TrackStats>
+                <TrackpointList trackpoints={this.props.activity.trackpoints}></TrackpointList>
+              </div>
+            </div>;
   }
 }
 

@@ -3,10 +3,6 @@ html, body {
   height: 100%;
 }
 
-#map {
-  min-width: 50%;
-}
-
 .app-container {
   padding: 1em;
   width: 100%;
@@ -24,4 +20,3 @@ html, body {
 .errors {
   margin-top: 0.5em;
 }
-
