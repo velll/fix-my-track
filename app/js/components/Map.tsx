@@ -1,6 +1,7 @@
 
 import * as React from "react";
 import { Trackpoint } from "../lib/activity";
+import { singleLine } from "../lib/geoJSON";
 import { setupMap } from "../map";
 
 class Map extends React.Component<Props, State>  {
@@ -10,7 +11,8 @@ class Map extends React.Component<Props, State>  {
   }
 
   public async componentDidMount() {
-    (window as any).map = setupMap('map', {});
+    const linePoints = singleLine(this.props.trackpoints);
+    (window as any).map = setupMap('map', linePoints);
   }
 
   public render() {
