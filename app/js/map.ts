@@ -9,9 +9,17 @@ import {Stroke, Style} from 'ol/style';
 import {OSM, Vector as VectorSource} from 'ol/source';
 import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
 
+import { Modify, Select, Interaction, defaults as defaultInteractions } from 'ol/interaction';
+
 (window as any).OpenLayers = ol;
 
-let styles: {[key: string]: Style} = {
+const styles: {[key: string]: Style} = {
+  'Point': new Style({
+    stroke: new Stroke({
+      color: 'blue',
+      width: 4
+    })
+  }),
   'LineString': new Style({
     stroke: new Stroke({
       color: 'red',
@@ -26,7 +34,7 @@ let styles: {[key: string]: Style} = {
   })
 };
 
-let styleFunction = function (feature: FeatureLike, res: number): Style {
+const styleFunction = function (feature: FeatureLike, res: number): Style {
   const type = feature.getGeometry()!.getType();
   return styles[type];
 };
@@ -35,12 +43,21 @@ const fit = (map: Map, feature: Feature) => {
   map.getView().fit(feature.getGeometry()!.getExtent(), {padding: [25, 25, 25, 25]});
 };
 
+const interactions = (): Interaction[] => {
+  const select = new Select({});
+
+  return [
+    select,
+    new Modify({features: select.getFeatures()})
+  ];
+};
+
 const setupMap = (target: string, route: any) => {
 
   const features = new GeoJSON().readFeatures(route);
-  let vectorSource = new VectorSource({features: features});
+  const vectorSource = new VectorSource({features: features});
 
-  let vectorLayer = new VectorLayer({
+  const vectorLayer = new VectorLayer({
     source: vectorSource,
     style: styleFunction
   });
@@ -51,7 +68,8 @@ const setupMap = (target: string, route: any) => {
       vectorLayer
     ],
     target: target,
-    view: new View({center: [0, 0], zoom: 2})
+    view: new View({center: [0, 0], zoom: 2}),
+    interactions: defaultInteractions().extend(interactions())
   });
 
   fit(map, features[0]);
