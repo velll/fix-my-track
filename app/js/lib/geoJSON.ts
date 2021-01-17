@@ -15,11 +15,32 @@ function singleLine(points: Point[]): {} {
   };
 }
 
+function points(points: Point[]): {} {
+  return {
+    "type": "FeatureCollection",
+    "features":
+      points.map((point, i) => (
+        {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': fromLonLat([point.long, point.lat])
+          },
+          'properties': {
+            'index': i
+          }
+        }
+      ))
+
+  };
+
+}
+
 interface Point {
   lat: number,
   long: number
 }
 
-export { singleLine };
+export { singleLine, points };
 
 

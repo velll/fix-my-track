@@ -1,26 +1,93 @@
 
 import * as React from "react";
-import { Activity } from "../lib/activity";
-import { setupMap } from "../map";
+import { Activity, Trackpoint } from "../lib/activity";
+import { setupMap, InteractionHandler } from "../map";
 import { Map } from "./Map";
-import { TrackpointList } from "./TrackpointList";
 import { TrackStats } from "./TrackStats";
 
 import './Track.css';
+import { TrackpointRow } from "./TrackpointRow";
+import { points } from "../lib/geoJSON";
+import { distanceBetween } from "../lib/distance";
 
 class Track extends React.Component<Props, State>  {
+  tableRef: React.RefObject<any>;
+  mapInteractionHandlers: InteractionHandlers;
+
   constructor(props: Props) {
     super(props);
-    this.state = {};
+    this.state = {highlighted: []};
+
+    this.tableRef = React.createRef();
+
+    this.focusTrackpoint = this.focusTrackpoint.bind(this);
+
+    this.mapInteractionHandlers = {
+      onSelected: this.focusTrackpoint.bind(this),
+      onDeSelected: this.deHighlight.bind(this)
+    };
+  }
+
+  distance(point: Trackpoint, index: number, all: Trackpoint[]) {
+    return index == 0 ? 0 : distanceBetween(point, all[index - 1]);
+  }
+
+  tableRow(trackpointNo: number) {
+    return this.tableRef.current!.getElementsByTagName('tr')[trackpointNo];
+  }
+
+  focusTrackpoint(trackpointNo: number) {
+    console.log('highlight and scroll');
+    console.log(trackpointNo);
+
+    this.highlight(trackpointNo);
+    this.scrollTo(trackpointNo);
+  }
+
+  scrollTo(trackpointNo: number) {
+    this.tableRow(trackpointNo).scrollIntoView({block: "center"});
+  }
+
+  highlight(trackpointNo: number) {
+    this.setState(state => (
+      {
+        highlighted: [trackpointNo, ...state.highlighted]
+      }
+    ));
+  }
+
+  deHighlight(trackpointNo: number) {
+    this.setState(state => (
+      {
+        highlighted: state.highlighted.filter(index => index != trackpointNo)
+      }
+    ));
   }
 
   public render() {
-    console.log(this.props.activity.trackpoints);
     return  <div className="track">
-              <Map trackpoints={this.props.activity.trackpoints}></Map>
+              <Map trackpoints={this.props.activity.trackpoints} handlers={this.mapInteractionHandlers}></Map>
+
               <div className="track-data">
                 <TrackStats sport={this.props.activity.totals.name} time={this.props.activity.totals.time}></TrackStats>
-                <TrackpointList trackpoints={this.props.activity.trackpoints}></TrackpointList>
+
+                <div className="trackpoint-list">
+                  <h2 className="title is-2">Trackpoints ({this.props.activity.trackpoints.length})</h2>
+
+                  <table className="table is-hoverable" ref={this.tableRef}>
+                    <tbody>
+                      {
+                        this.props.activity.trackpoints.map((point, i, allPoints) => (
+                          <TrackpointRow index={i}
+                                         point={point}
+                                         distanceInc={this.distance(point, i, allPoints)}
+                                         highlighted={this.state.highlighted.includes(i)} ></TrackpointRow>
+                        ))
+                      }
+                    </tbody>
+                  </table>
+
+                </div>;
               </div>
             </div>;
   }
@@ -31,6 +98,12 @@ interface Props {
 }
 
 interface State {
+  highlighted: number[]
 }
 
-export { Track };
+interface InteractionHandlers {
+  onSelected: InteractionHandler,
+  onDeSelected: InteractionHandler
+}
+
+export { Track, InteractionHandlers };

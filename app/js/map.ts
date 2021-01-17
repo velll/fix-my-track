@@ -34,6 +34,16 @@ const styles: {[key: string]: Style} = {
   })
 };
 
+let highlightStyle = new Style({
+  // fill: new Fill({
+  //   color: 'rgba(255,255,255,0.7)',
+  // }),
+  stroke: new Stroke({
+    color: '#3399CC',
+    width: 3
+  })
+});
+
 const styleFunction = function (feature: FeatureLike, res: number): Style {
   const type = feature.getGeometry()!.getType();
   return styles[type];
@@ -43,8 +53,19 @@ const fit = (map: Map, feature: Feature) => {
   map.getView().fit(feature.getGeometry()!.getExtent(), {padding: [25, 25, 25, 25]});
 };
 
-const interactions = (): Interaction[] => {
+const interactions = ({onSelected, onDeSelected}: InteractionHandlers): Interaction[] => {
   const select = new Select({});
+
+  select.on('select',e => {
+
+    if (e.selected.length > 0) {
+      onSelected(e.selected[e.selected.length - 1].getProperties().index);
+    }
+
+    e.deselected.forEach(deselected => {
+      onDeSelected(deselected.getProperties().index);
+    });
+  });
 
   return [
     select,
@@ -52,15 +73,16 @@ const interactions = (): Interaction[] => {
   ];
 };
 
-const setupMap = (target: string, route: any) => {
-
+const setupMap = (target: string, route: any, options: MapSetupOptions) => {
   const features = new GeoJSON().readFeatures(route);
   const vectorSource = new VectorSource({features: features});
 
   const vectorLayer = new VectorLayer({
-    source: vectorSource,
-    style: styleFunction
+    source: vectorSource
+    // style: styleFunction
   });
+
+  const customInteractions = interactions(options.interactionHandlers);
 
   const map = new Map({
     layers: [
@@ -69,13 +91,23 @@ const setupMap = (target: string, route: any) => {
     ],
     target: target,
     view: new View({center: [0, 0], zoom: 2}),
-    interactions: defaultInteractions().extend(interactions())
+    interactions: defaultInteractions().extend(customInteractions)
   });
 
-  fit(map, features[0]);
+  map.getView().fit(vectorLayer.getSource().getExtent(), {padding: [25, 25, 25, 25]});
 
   return map;
 };
 
+type InteractionHandler = (arg0: number) => void;
 
-export  { setupMap };
+interface MapSetupOptions {
+  interactionHandlers: InteractionHandlers
+}
+
+interface InteractionHandlers {
+  onSelected: InteractionHandler,
+  onDeSelected: InteractionHandler
+}
+
+export  { setupMap, InteractionHandler };
