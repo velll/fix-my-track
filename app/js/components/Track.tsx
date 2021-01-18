@@ -1,7 +1,7 @@
 
 import * as React from "react";
-import { Activity, Trackpoint } from "../lib/activity";
-import { setupMap, InteractionHandler } from "../map";
+import { Activity, Trackpoint } from "../activity";
+import { setupMap, InteractionHandler, InteractionHandlerExt } from "../map";
 import { Map } from "./Map";
 import { TrackStats } from "./TrackStats";
 
@@ -24,7 +24,8 @@ class Track extends React.Component<Props, State>  {
 
     this.mapInteractionHandlers = {
       onSelected: this.focusTrackpoint.bind(this),
-      onDeSelected: this.deHighlight.bind(this)
+      onDeSelected: this.deHighlight.bind(this),
+      onMoved: this.registerMove.bind(this)
     };
   }
 
@@ -64,6 +65,22 @@ class Track extends React.Component<Props, State>  {
     ));
   }
 
+  buildTrackpoint(original: Trackpoint, coordinates: number[]): Trackpoint {
+    return {
+      time: original.time,
+      long: coordinates![0],
+      lat: coordinates![1]
+    };
+  }
+
+  registerMove(trackpointNo: number, coordinates: number[]) {
+    const trackpoint = this.buildTrackpoint(
+      this.props.activity.trackpoints[trackpointNo],
+      coordinates);
+
+    this.props.replaceTrackpoint(trackpointNo, trackpoint);
+  }
+
   public render() {
     return  <div className="track">
               <Map trackpoints={this.props.activity.trackpoints} handlers={this.mapInteractionHandlers}></Map>
@@ -94,7 +111,8 @@ class Track extends React.Component<Props, State>  {
 }
 
 interface Props {
-  activity: Activity
+  activity: Activity,
+  replaceTrackpoint: (trackpointNo: number, trackpoint: Trackpoint) => void
 }
 
 interface State {
@@ -103,7 +121,9 @@ interface State {
 
 interface InteractionHandlers {
   onSelected: InteractionHandler,
-  onDeSelected: InteractionHandler
+  onDeSelected: InteractionHandler,
+  onMoved: InteractionHandlerExt
+
 }
 
 export { Track, InteractionHandlers };

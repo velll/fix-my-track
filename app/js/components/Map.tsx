@@ -1,6 +1,6 @@
 
 import * as React from "react";
-import { Trackpoint } from "../lib/activity";
+import { Trackpoint } from "../activity";
 import { singleLine, points } from "../lib/geoJSON";
 import { setupMap, InteractionHandler } from "../map";
 import { InteractionHandlers } from './Track';

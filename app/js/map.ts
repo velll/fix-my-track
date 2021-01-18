@@ -11,6 +11,8 @@ import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
 
 import { Modify, Select, Interaction, defaults as defaultInteractions } from 'ol/interaction';
 import { lastOf } from './lib/array';
+import Point from 'ol/geom/Point';
+import { toLonLat } from 'ol/proj';
 
 (window as any).OpenLayers = ol;
 
@@ -50,15 +52,14 @@ const styleFunction = function (feature: FeatureLike, res: number): Style {
   return styles[type];
 };
 
-const fit = (map: Map, feature: Feature) => {
-  map.getView().fit(feature.getGeometry()!.getExtent(), {padding: [25, 25, 25, 25]});
+const fit = (map: Map, layer: VectorLayer) => {
+  map.getView().fit(layer.getSource().getExtent(), {padding: [25, 25, 25, 25]});
 };
 
-const interactions = ({onSelected, onDeSelected}: InteractionHandlers): Interaction[] => {
+const interactions = ({onSelected, onDeSelected, onMoved}: InteractionHandlers): Interaction[] => {
   const select = new Select({});
 
-  select.on('select',e => {
-
+  select.on('select', e => {
     if (e.selected.length > 0) {
       onSelected(lastOf(e.selected)!.getProperties().index);
     }
@@ -68,10 +69,16 @@ const interactions = ({onSelected, onDeSelected}: InteractionHandlers): Interact
     });
   });
 
-  return [
-    select,
-    new Modify({features: select.getFeatures()})
-  ];
+  const modify = new Modify({features: select.getFeatures()});
+
+  modify.on('modifyend', e => {
+    const point = e.features.getArray()[0];
+    const geometry = point.getGeometry() as Point;
+
+    onMoved(point.getProperties().index, toLonLat(geometry.getCoordinates()));
+  });
+
+  return [select, modify];
 };
 
 const setupMap = (target: string, route: any, options: MapSetupOptions) => {
@@ -95,12 +102,13 @@ const setupMap = (target: string, route: any, options: MapSetupOptions) => {
     interactions: defaultInteractions().extend(customInteractions)
   });
 
-  map.getView().fit(vectorLayer.getSource().getExtent(), {padding: [25, 25, 25, 25]});
+  fit(map, vectorLayer);
 
   return map;
 };
 
 type InteractionHandler = (arg0: number) => void;
+type InteractionHandlerExt = (arg0: number, arg1: number[]) => void;
 
 interface MapSetupOptions {
   interactionHandlers: InteractionHandlers
@@ -108,7 +116,8 @@ interface MapSetupOptions {
 
 interface InteractionHandlers {
   onSelected: InteractionHandler,
-  onDeSelected: InteractionHandler
+  onDeSelected: InteractionHandler,
+  onMoved: InteractionHandlerExt
 }
 
-export  { setupMap, InteractionHandler };
+export  { setupMap, InteractionHandler, InteractionHandlerExt };

@@ -1,4 +1,4 @@
-import { Trackpoint, Lap, Totals } from './activity';
+import { Trackpoint, Lap, Totals } from '../activity';
 
 class TCX {
   source: string;

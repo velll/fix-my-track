@@ -1,4 +1,5 @@
-import { TCX } from "./tcx";
+import { Edit } from "./edit";
+import { TCX } from "./lib/tcx";
 
 class Activity {
   source: string;
@@ -19,6 +20,11 @@ class Activity {
 
   get trackpoints(): Trackpoint[] {
     return this.laps[0].trackpoints;
+  }
+
+  applyEdit(edit: Edit): Activity {
+    this.laps[0].trackpoints = edit.apply(this.trackpoints);
+    return this;
   }
 }
 

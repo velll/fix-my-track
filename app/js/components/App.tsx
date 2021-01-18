@@ -1,14 +1,16 @@
 import * as React from "react";
-import { Activity } from "../lib/activity";
+import { Activity, Trackpoint } from "../activity";
 import { Dropzone } from "./Dropzone";
 import { Track } from "./Track";
 
+import { Edit } from "../edit";
 class App extends React.Component<Props, State>  {
   constructor(props: Props) {
     super(props);
     this.state = {activity: null, trackFile: null, stage: Stage.start};
 
     this.processTrack = this.processTrack.bind(this);
+    this.replaceTrackpoint = this.replaceTrackpoint.bind(this);
   }
 
   public async componentDidMount() {
@@ -19,7 +21,7 @@ class App extends React.Component<Props, State>  {
     if (stage == Stage.start) {
       return <Dropzone onFileRead={this.processTrack}></Dropzone>;
     } else {
-      return <Track activity={this.state.activity!}></Track>;
+      return <Track activity={this.state.activity!} replaceTrackpoint={this.replaceTrackpoint}></Track>;
     }
   }
 
@@ -28,6 +30,14 @@ class App extends React.Component<Props, State>  {
       stage: Stage.show,
       trackFile: trackFile,
       activity: Activity.fromTCX(trackFile)
+    }));
+  }
+
+  replaceTrackpoint(trackpointNo: number, trackpoint: Trackpoint) {
+    this.setState(state => ({
+      stage: state.stage,
+      trackFile: state.trackFile,
+      activity: state.activity!.applyEdit(new Edit(trackpointNo, trackpoint))
     }));
   }
 

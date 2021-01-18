@@ -1,4 +1,4 @@
-import { Trackpoint } from "../lib/activity";
+import { Trackpoint } from "../activity";
 import React from 'react';
 import { round } from '../lib/round';
 
