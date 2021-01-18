@@ -10,6 +10,7 @@ import {OSM, Vector as VectorSource} from 'ol/source';
 import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
 
 import { Modify, Select, Interaction, defaults as defaultInteractions } from 'ol/interaction';
+import { lastOf } from './lib/array';
 
 (window as any).OpenLayers = ol;
 
@@ -59,7 +60,7 @@ const interactions = ({onSelected, onDeSelected}: InteractionHandlers): Interact
   select.on('select',e => {
 
     if (e.selected.length > 0) {
-      onSelected(e.selected[e.selected.length - 1].getProperties().index);
+      onSelected(lastOf(e.selected)!.getProperties().index);
     }
 
     e.deselected.forEach(deselected => {
