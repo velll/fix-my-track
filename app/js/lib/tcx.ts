@@ -66,11 +66,11 @@ class TCX {
     const lonNodes = getNodes(this.xmldoc, "//ns:Trackpoint/ns:Position/ns:LongitudeDegrees");
 
     latNodes.forEach((node, i) => {
-      node!.textContent = trackpoints[i].long.toString();
+      node!.textContent = trackpoints[i].lat.toString();
     });
 
     lonNodes.forEach((node, i) => {
-      node!.textContent = trackpoints[i].lat.toString();
+      node!.textContent = trackpoints[i].long.toString();
     });
 
     return new XMLSerializer().serializeToString(this.xmldoc.documentElement);
