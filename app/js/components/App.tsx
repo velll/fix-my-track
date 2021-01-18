@@ -4,6 +4,8 @@ import { Dropzone } from "./Dropzone";
 import { Track } from "./Track";
 
 import { Edit } from "../edit";
+import { Export } from "./Export";
+
 class App extends React.Component<Props, State>  {
   constructor(props: Props) {
     super(props);
@@ -11,6 +13,7 @@ class App extends React.Component<Props, State>  {
 
     this.processTrack = this.processTrack.bind(this);
     this.replaceTrackpoint = this.replaceTrackpoint.bind(this);
+    this.goToExport = this.goToExport.bind(this);
   }
 
   public async componentDidMount() {
@@ -18,10 +21,13 @@ class App extends React.Component<Props, State>  {
   }
 
   componentFor(stage: Stage) {
-    if (stage == Stage.start) {
-      return <Dropzone onFileRead={this.processTrack}></Dropzone>;
-    } else {
-      return <Track activity={this.state.activity!} replaceTrackpoint={this.replaceTrackpoint}></Track>;
+    switch(stage) {
+      case Stage.start:
+        return <Dropzone onFileRead={this.processTrack}></Dropzone>;
+      case Stage.show:
+        return <Track activity={this.state.activity!} replaceTrackpoint={this.replaceTrackpoint} nextStep={this.goToExport}></Track>;
+      case Stage.export:
+        return <Export activity={this.state.activity!}></Export>;
     }
   }
 
@@ -41,6 +47,14 @@ class App extends React.Component<Props, State>  {
     }));
   }
 
+  goToExport() {
+    this.setState(state => ({
+      stage: Stage.export,
+      trackFile: state.trackFile,
+      activity: state.activity
+    }));
+  }
+
   public render() {
    return this.componentFor(this.state.stage);
   }
@@ -57,7 +71,8 @@ interface State {
 
 enum Stage {
   start,
-  show
+  show,
+  export
 }
 
 export { App };

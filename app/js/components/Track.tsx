@@ -9,6 +9,7 @@ import './Track.css';
 import { TrackpointRow } from "./TrackpointRow";
 import { points } from "../lib/geoJSON";
 import { distanceBetween } from "../lib/distance";
+import { ExportButtons } from './ExportButtons';
 
 class Track extends React.Component<Props, State>  {
   tableRef: React.RefObject<any>;
@@ -96,6 +97,7 @@ class Track extends React.Component<Props, State>  {
                       {
                         this.props.activity.trackpoints.map((point, i, allPoints) => (
                           <TrackpointRow index={i}
+                                         key={i}
                                          point={point}
                                          distanceInc={this.distance(point, i, allPoints)}
                                          highlighted={this.state.highlighted.includes(i)} ></TrackpointRow>
@@ -105,6 +107,7 @@ class Track extends React.Component<Props, State>  {
                   </table>
 
                 </div>;
+                <ExportButtons goToExport={this.props.nextStep}></ExportButtons>
               </div>
             </div>;
   }
@@ -112,7 +115,8 @@ class Track extends React.Component<Props, State>  {
 
 interface Props {
   activity: Activity,
-  replaceTrackpoint: (trackpointNo: number, trackpoint: Trackpoint) => void
+  replaceTrackpoint: (trackpointNo: number, trackpoint: Trackpoint) => void,
+  nextStep: () => void
 }
 
 interface State {

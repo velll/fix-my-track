@@ -26,6 +26,12 @@ class Activity {
     this.laps[0].trackpoints = edit.apply(this.trackpoints);
     return this;
   }
+
+  toTCX(){
+    const tcx = new TCX(this.source);
+
+    return tcx.modify(0, this.trackpoints);
+  }
 }
 
 interface Trackpoint {

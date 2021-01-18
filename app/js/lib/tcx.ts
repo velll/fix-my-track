@@ -1,4 +1,5 @@
 import { Trackpoint, Lap, Totals } from '../activity';
+import { getNodes } from './xpath';
 
 class TCX {
   source: string;
@@ -54,6 +55,25 @@ class TCX {
                trackpoint.getElementsByTagName("Position")[0].getElementsByTagName("LongitudeDegrees")[0].textContent  || '0')
       };
     });
+  }
+
+  modify(lap: number, trackpoints: {long: number, lat: number}[]) {
+    if (trackpoints.length != this.trackpoints.length) {
+      throw new Error('Inconsistent trackpoints length');
+    }
+
+    const latNodes = getNodes(this.xmldoc, "//ns:Trackpoint/ns:Position/ns:LatitudeDegrees");
+    const lonNodes = getNodes(this.xmldoc, "//ns:Trackpoint/ns:Position/ns:LongitudeDegrees");
+
+    latNodes.forEach((node, i) => {
+      node!.textContent = trackpoints[i].long.toString();
+    });
+
+    lonNodes.forEach((node, i) => {
+      node!.textContent = trackpoints[i].lat.toString();
+    });
+
+    return new XMLSerializer().serializeToString(this.xmldoc.documentElement);
   }
 }
 
