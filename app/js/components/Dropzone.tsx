@@ -20,7 +20,7 @@ function Dropzone(props: Props) {
     });
 
   }, []);
-  const {getRootProps, getInputProps} = useDropzone({onDrop: onDrop});
+  const {getRootProps, getInputProps} = useDropzone({onDrop: onDrop, accept: '.tcx,.xml'});
 
   return (
     <div className='dropzone' {...getRootProps()}>
