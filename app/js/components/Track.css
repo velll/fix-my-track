@@ -25,7 +25,7 @@
 }
 
 .track-data {
-  max-height: 100vh;
+  max-height: 100%;
   overflow-y: auto;
   overflow-x: visible;
 }
