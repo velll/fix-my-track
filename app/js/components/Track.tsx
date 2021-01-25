@@ -89,9 +89,8 @@ class Track extends React.Component<Props, State>  {
               <div className="track-data">
                 <TrackStats sport={this.props.activity.totals.name} time={this.props.activity.totals.time}></TrackStats>
 
+                <h2 className="title is-2">Trackpoints ({this.props.activity.trackpoints.length})</h2>
                 <div className="trackpoint-list">
-                  <h2 className="title is-2">Trackpoints ({this.props.activity.trackpoints.length})</h2>
-
                   <table className="table is-hoverable" ref={this.tableRef}>
                     <tbody>
                       {
@@ -106,7 +105,7 @@ class Track extends React.Component<Props, State>  {
                     </tbody>
                   </table>
 
-                </div>;
+                </div>
                 <ExportButtons goToExport={this.props.nextStep}></ExportButtons>
               </div>
             </div>;
