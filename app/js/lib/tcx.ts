@@ -1,5 +1,6 @@
 import { Trackpoint, Lap, Totals } from '../activity';
-import { getNodes } from './xpath';
+import { firstChild } from 'xml-wrappers';
+import { select } from 'xml-wrappers';
 
 class TCX {
   source: string;
@@ -14,10 +15,12 @@ class TCX {
   }
 
   get laps(): Lap[]{
-    const lapElements = Array.from(this.activity.getElementsByTagName("Lap"));
+    // const lapNodes = Array.from(this.xmldoc.getElementsByTagName('Lap'))
+    const lapNodes = select(this.xmldoc, "//ns:Activity/ns:Lap");
+    console.log(lapNodes)
 
-    return lapElements.map(lapElement => (
-      { trackpoints: this.trackpointsOf(lapElement)}
+    return lapNodes.map(lapNode => (
+      { trackpoints: this.trackpointsOf(lapNode).filter(pos => pos.lat && pos.long) }
     ));
   }
 
@@ -39,22 +42,29 @@ class TCX {
     return { time: this.totalTime, name: this.activityName };
   }
 
-  public trackpointsOf(lap: Element): Trackpoint[] {
-    const trackpointElements = Array.from(
-      lap.getElementsByTagName("Track")[0].getElementsByTagName("Trackpoint")).filter(element => (
-        element.getElementsByTagName("Position")[0] && element.getElementsByTagName("Time")[0]
-      ));
+  positionCoordinates(context: Node): {lat: number, long: number} {
+    const latNode = firstChild(context, 'LatitudeDegrees');
+    const lat = latNode ? latNode.textContent || '0' : '0';
 
+    const longNode = firstChild(context, 'LongitudeDegrees');
+    const long = longNode ? longNode.textContent || '0' : '0';
 
-    return trackpointElements.map((trackpoint: Element) => {
-      return {
-        time: trackpoint.getElementsByTagName("Time")[0].textContent || '',
-        lat: parseFloat(
-               trackpoint.getElementsByTagName("Position")[0].getElementsByTagName("LatitudeDegrees")[0].textContent  || '0'),
-        long: parseFloat(
-               trackpoint.getElementsByTagName("Position")[0].getElementsByTagName("LongitudeDegrees")[0].textContent  || '0')
-      };
-    });
+    return {lat: parseFloat(lat), long: parseFloat(long)};
+  }
+
+  trackpointsOf(lap: Node): Trackpoint[] {
+    const trackpointNodes = select(this.xmldoc, '//ns:Track/ns:Trackpoint').map(node => (
+      {
+        timeNode: firstChild(node, 'Time'),
+        positionNode: firstChild(node, 'Position')
+      })).filter(({timeNode, positionNode}) => timeNode && positionNode);
+
+     return trackpointNodes.map(({timeNode, positionNode}) => (
+      {
+        time: timeNode!.textContent || '',
+        ...this.positionCoordinates(positionNode!)
+      }
+     ));
   }
 
   modify(lap: number, trackpoints: {long: number, lat: number}[]) {
@@ -62,8 +72,8 @@ class TCX {
       throw new Error('Inconsistent trackpoints length');
     }
 
-    const latNodes = getNodes(this.xmldoc, "//ns:Trackpoint/ns:Position/ns:LatitudeDegrees");
-    const lonNodes = getNodes(this.xmldoc, "//ns:Trackpoint/ns:Position/ns:LongitudeDegrees");
+    const latNodes = select(this.xmldoc, "//ns:Trackpoint/ns:Position/ns:LatitudeDegrees");
+    const lonNodes = select(this.xmldoc, "//ns:Trackpoint/ns:Position/ns:LongitudeDegrees");
 
     latNodes.forEach((node, i) => {
       node!.textContent = trackpoints[i].lat.toString();

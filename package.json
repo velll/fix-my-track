@@ -29,6 +29,7 @@
     "ol": "^6.5.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-dropzone": "^11.2.4"
+    "react-dropzone": "^11.2.4",
+    "xml-wrappers": "^0.1.1"
   }
 }
