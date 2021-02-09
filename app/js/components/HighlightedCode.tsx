@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import highlight from 'highlight.js';
-import 'highlight.js/styles/github.css';
+import 'highlight.js/styles/github-gist.css';
 
 class HighlightedCode extends React.Component<Props, {}>  {
   codeRef: React.RefObject<any>;
@@ -17,7 +17,7 @@ class HighlightedCode extends React.Component<Props, {}>  {
 
   render () {
     return (
-      <pre>
+      <pre className="box is-white">
         <code className={this.props.language} ref={this.codeRef}>
           {this.props.children}
         </code>
