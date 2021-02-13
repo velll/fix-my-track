@@ -17,7 +17,7 @@ class Track extends React.Component<Props, State>  {
 
   constructor(props: Props) {
     super(props);
-    this.state = {highlighted: []};
+    this.state = {highlighted: -1};
 
     this.tableRef = React.createRef();
 
@@ -25,7 +25,7 @@ class Track extends React.Component<Props, State>  {
 
     this.mapInteractionHandlers = {
       onSelected: this.focusTrackpoint.bind(this),
-      onDeSelected: this.deHighlight.bind(this),
+      onDeSelected: () => (null),
       onMoved: this.registerMove.bind(this)
     };
   }
@@ -48,27 +48,7 @@ class Track extends React.Component<Props, State>  {
   }
 
   highlight(trackpointNo: number) {
-    this.setState(state => (
-      {
-        highlighted: [trackpointNo, ...state.highlighted]
-      }
-    ));
-  }
-
-  deHighlight(trackpointNo: number) {
-    this.setState(state => (
-      {
-        highlighted: state.highlighted.filter(index => index != trackpointNo)
-      }
-    ));
-  }
-
-  buildTrackpoint(original: Trackpoint, coordinates: number[]): Trackpoint {
-    return {
-      time: original.time,
-      long: coordinates![0],
-      lat: coordinates![1]
-    };
+    this.setState({ highlighted: trackpointNo });
   }
 
   registerMove(trackpointNo: number, coordinates: number[]) {
@@ -96,7 +76,7 @@ class Track extends React.Component<Props, State>  {
                                          key={i}
                                          point={point}
                                          distanceInc={this.distance(point, i, allPoints)}
-                                         highlighted={this.state.highlighted.includes(i)} ></TrackpointRow>
+                                         highlighted={this.state.highlighted == i} ></TrackpointRow>
                         ))
                       }
                     </tbody>
@@ -116,7 +96,7 @@ interface Props {
 }
 
 interface State {
-  highlighted: number[]
+  highlighted: number
 }
 
 interface InteractionHandlers {
