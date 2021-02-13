@@ -1,6 +1,6 @@
 
 import * as React from "react";
-import { Activity, Trackpoint } from "../activity";
+import { Activity, Trackpoint, buildTrackpoint } from "../activity";
 import { setupMap, InteractionHandler, InteractionHandlerExt } from "../map";
 import { Map } from "./Map";
 import { TrackStats } from "./TrackStats";
@@ -39,9 +39,6 @@ class Track extends React.Component<Props, State>  {
   }
 
   focusTrackpoint(trackpointNo: number) {
-    console.log('highlight and scroll');
-    console.log(trackpointNo);
-
     this.highlight(trackpointNo);
     this.scrollTo(trackpointNo);
   }
@@ -75,7 +72,7 @@ class Track extends React.Component<Props, State>  {
   }
 
   registerMove(trackpointNo: number, coordinates: number[]) {
-    const trackpoint = this.buildTrackpoint(
+    const trackpoint = buildTrackpoint(
       this.props.activity.trackpoints[trackpointNo],
       coordinates);
 

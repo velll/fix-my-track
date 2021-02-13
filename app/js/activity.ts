@@ -40,6 +40,14 @@ interface Trackpoint {
   time: string
 }
 
+function buildTrackpoint(original: Trackpoint, coordinates: number[]): Trackpoint {
+  return {
+    time: original.time,
+    long: coordinates![0],
+    lat: coordinates![1]
+  };
+}
+
 interface Lap {
   trackpoints: Trackpoint[]
 }
@@ -49,4 +57,4 @@ interface Totals {
   time: number
 }
 
-export { Activity, Trackpoint, Lap, Totals };
+export { Activity, Trackpoint, buildTrackpoint, Lap, Totals };
