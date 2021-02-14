@@ -1,13 +1,12 @@
 
 import * as React from "react";
-import { Activity, Trackpoint, buildTrackpoint } from "../activity";
-import { setupMap, InteractionHandler, InteractionHandlerExt } from "../map";
+import { Activity, buildTrackpoint, Trackpoint } from "../activity";
+import { InteractionHandler, InteractionHandlerExt } from "../map";
 import { Map } from "./Map";
 import { TrackStats } from "./TrackStats";
 
 import './Track.css';
 import { TrackpointRow } from "./TrackpointRow";
-import { points } from "../lib/geoJSON";
 import { distanceBetween } from "../lib/distance";
 import { ExportButtons } from './ExportButtons';
 
@@ -17,11 +16,16 @@ class Track extends React.Component<Props, State>  {
 
   constructor(props: Props) {
     super(props);
-    this.state = {highlighted: -1};
+    this.state = {
+      highlighted: -1,
+      trackpoints: props.activity.trackpoints.map(trackpoint => [trackpoint.long, trackpoint.lat]),
+      extras: props.activity.trackpoints.map(trackpoint => ({time: trackpoint.time}))
+    };
 
     this.tableRef = React.createRef();
 
     this.focusTrackpoint = this.focusTrackpoint.bind(this);
+    this.save = this.save.bind(this);
 
     this.mapInteractionHandlers = {
       onSelected: this.focusTrackpoint.bind(this),
@@ -30,7 +34,7 @@ class Track extends React.Component<Props, State>  {
     };
   }
 
-  distance(point: Trackpoint, index: number, all: Trackpoint[]) {
+  distance(point: number[], index: number, all: number[][]) {
     return index == 0 ? 0 : distanceBetween(point, all[index - 1]);
   }
 
@@ -51,30 +55,37 @@ class Track extends React.Component<Props, State>  {
     this.setState({ highlighted: trackpointNo });
   }
 
-  registerMove(trackpointNo: number, coordinates: number[]) {
-    const trackpoint = buildTrackpoint(
-      this.props.activity.trackpoints[trackpointNo],
-      coordinates);
+  registerMove(coordinates: number[][]) {
+    this.setState(state => ({
+      ...state,
+      trackpoints: coordinates
+    }));
+  }
 
-    this.props.replaceTrackpoint(trackpointNo, trackpoint);
+  save(){
+    this.props.activity.replaceTrackpoints(
+      this.props.activity.trackpoints.map((original, i) => buildTrackpoint(original, this.state.trackpoints[i]))
+    );
+    this.props.nextStep();
   }
 
   public render() {
     return  <div className="track">
-              <Map trackpoints={this.props.activity.trackpoints} handlers={this.mapInteractionHandlers}></Map>
+              <Map trackpoints={this.state.trackpoints} handlers={this.mapInteractionHandlers}></Map>
 
               <div className="track-data">
                 <TrackStats sport={this.props.activity.totals.name} time={this.props.activity.totals.time}></TrackStats>
 
-                <h2 className="title is-2">Trackpoints ({this.props.activity.trackpoints.length})</h2>
+                <h2 className="title is-2">Trackpoints ({this.state.trackpoints.length})</h2>
                 <div className="trackpoint-list">
                   <table className="table is-hoverable" ref={this.tableRef}>
                     <tbody>
                       {
-                        this.props.activity.trackpoints.map((point, i, allPoints) => (
+                        this.state.trackpoints.map((point, i, allPoints) => (
                           <TrackpointRow index={i}
                                          key={i}
-                                         point={point}
+                                         coordinates={point}
+                                         extra={this.state.extras[i]}
                                          distanceInc={this.distance(point, i, allPoints)}
                                          highlighted={this.state.highlighted == i} ></TrackpointRow>
                         ))
@@ -83,7 +94,7 @@ class Track extends React.Component<Props, State>  {
                   </table>
 
                 </div>
-                <ExportButtons goToExport={this.props.nextStep}></ExportButtons>
+                <ExportButtons goToExport={this.save}></ExportButtons>
               </div>
             </div>;
   }
@@ -96,14 +107,19 @@ interface Props {
 }
 
 interface State {
-  highlighted: number
+  highlighted: number,
+  trackpoints: number[][],
+  extras: Extra[]
+}
+
+interface Extra {
+  time: string
 }
 
 interface InteractionHandlers {
   onSelected: InteractionHandler,
   onDeSelected: InteractionHandler,
   onMoved: InteractionHandlerExt
-
 }
 
-export { Track, InteractionHandlers };
+export { Track, Extra, InteractionHandlers };

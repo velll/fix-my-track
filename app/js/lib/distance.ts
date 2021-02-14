@@ -1,8 +1,9 @@
+import { Coordinate } from 'ol/coordinate';
 import {getDistance} from 'ol/sphere';
-import { Trackpoint } from '../activity';
 
-const distanceBetween = (from: Trackpoint, to: Trackpoint) => (
-  getDistance([from.long, from.lat], [to.long, to.lat])
+// TODO: delete?
+const distanceBetween = (from: Coordinate, to: Coordinate) => (
+  getDistance(from, to)
 );
 
 export { distanceBetween };

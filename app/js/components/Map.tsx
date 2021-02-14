@@ -1,8 +1,8 @@
 
+import { Coordinate } from "ol/coordinate";
 import * as React from "react";
-import { Trackpoint } from "../activity";
 import { singleLine, points } from "../lib/geoJSON";
-import { setupMap, InteractionHandler } from "../map";
+import { setupMap } from "../map";
 import { InteractionHandlers } from './Track';
 
 class Map extends React.Component<Props, State>  {
@@ -12,7 +12,7 @@ class Map extends React.Component<Props, State>  {
   }
 
   public async componentDidMount() {
-    const linePoints = points(this.props.trackpoints);
+    const linePoints = singleLine(this.props.trackpoints);
     (window as any).map = setupMap('map', linePoints, {interactionHandlers: this.props.handlers});
   }
 
@@ -22,7 +22,7 @@ class Map extends React.Component<Props, State>  {
 }
 
 interface Props {
-  trackpoints: Trackpoint[]
+  trackpoints: Coordinate[]
   handlers: InteractionHandlers
 }
 
