@@ -1,48 +1,36 @@
-import { FeatureLike } from "ol/Feature";
+import LineString from "ol/geom/LineString";
+import MultiPoint from "ol/geom/MultiPoint";
 import { Fill, Stroke, Style } from "ol/style";
+import CircleStyle from "ol/style/Circle";
 
-const styles: {[key: string]: Style} = {
-  'Point': new Style({
+let lineStyle = [
+  new Style({
     stroke: new Stroke({
       color: 'blue',
-      width: 4
+      width: 3
     })
+    // fill: new Fill({
+    //   color: 'rgba(255,255,0,0.4)',
+    // }),
   }),
-  'LineString': new Style({
-    stroke: new Stroke({
-      color: 'red',
-      width: 2
-    })
-  }),
-  'MultiLineString': new Style({
-    stroke: new Stroke({
-      color: 'green',
-      width: 1
-    })
+  new Style({
+    image: new CircleStyle({
+      radius: 5,
+      fill: new Fill({
+        color: 'rgba(255,255,0,0.4)'
+      }),
+      stroke: new Stroke({
+        color: 'blue',
+        width: 0.3
+      })
+    }),
+    geometry: function (feature) {
+      const geometry = feature.getGeometry() as LineString;
+      const coordinates = geometry.getCoordinates();
+      return new MultiPoint(coordinates);
+    }
   })
-};
+];
 
-const highlightStyle = new Style({
-  fill: new Fill({
-    color: 'rgba(255,255,255,0.7)'
-  }),
-  stroke: new Stroke({
-    color: 'red',
-    width: 3
-  })
-});
 
-const styleFunction = function (feature: FeatureLike, res: number): Style {
-  const type = feature.getGeometry()!.getType();
-  return styles[type];
-};
-
-const lineStringStyle = new Style({
-  stroke: new Stroke({
-    color: '#3399CC',
-    lineCap: 'square',
-    width: 3
-  })
-});
-
-export { styles, highlightStyle, styleFunction, lineStringStyle };
+export { lineStyle };

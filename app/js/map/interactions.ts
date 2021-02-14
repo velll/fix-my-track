@@ -4,8 +4,6 @@ import { toLonLat } from 'ol/proj';
 import { pointerMove } from 'ol/events/condition';
 import LineString from 'ol/geom/LineString';
 import { Collection } from 'ol';
-
-import { highlightStyle } from './styles';
 import { isSame } from './helpers';
 
 const forbidden = () => (false);

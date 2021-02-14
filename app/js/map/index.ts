@@ -8,7 +8,7 @@ import {OSM, Vector as VectorSource} from 'ol/source';
 import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
 
 import { defaults as defaultInteractions } from 'ol/interaction';
-import { lineStringStyle } from './styles';
+import { lineStyle } from './styles';
 import { fit } from './helpers';
 import { interactions, InteractionHandlers, InteractionHandler, InteractionHandlerExt } from './interactions';
 
@@ -21,7 +21,7 @@ const setupMap = (target: string, route: any, options: MapSetupOptions) => {
 
   const vectorLayer = new VectorLayer({
     source: vectorSource,
-    style: lineStringStyle
+    style: lineStyle
   });
 
   (window as any).features = features;
