@@ -3,7 +3,7 @@ import MultiPoint from "ol/geom/MultiPoint";
 import { Fill, Stroke, Style } from "ol/style";
 import CircleStyle from "ol/style/Circle";
 
-let lineStyle = [
+const lineStyle = [
   new Style({
     stroke: new Stroke({
       color: 'blue',
