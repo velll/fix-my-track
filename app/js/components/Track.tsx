@@ -9,7 +9,7 @@ import './Track.css';
 import { TrackpointRow } from "./TrackpointRow";
 import { distanceBetween } from "../lib/distance";
 import ExportButtons from './ExportButtons';
-import { globalState } from "../state/types";
+import { GlobalState } from "../state/types";
 import { connect, ConnectedProps } from "react-redux";
 
 class Track extends React.Component<Props, State>  {
@@ -38,8 +38,8 @@ class Track extends React.Component<Props, State>  {
   }
 
   componentDidMount() {
-    console.log('mounted track')
-    console.log(this.props.activity)
+    console.log('mounted track');
+    console.log(this.props.activity);
   }
 
   distance(point: number[], index: number, all: number[][]) {
@@ -129,7 +129,7 @@ interface InteractionHandlers {
   onMoved: InteractionHandlerExt
 }
 
-function mapStateToProps(state: globalState) {
+function mapStateToProps(state: GlobalState) {
   return { activity: state.activity!.processed };
 }
 

@@ -11,9 +11,9 @@ interface ActivityState {
   processed: Activity
 }
 
-interface globalState {
+interface GlobalState {
   stage: Stage,
   activity: ActivityState
 }
 
-export { globalState, ActivityState, Stage };
+export { GlobalState, ActivityState, Stage };

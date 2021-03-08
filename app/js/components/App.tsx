@@ -9,7 +9,7 @@ import { Edit } from "../edit";
 
 import { connect, ConnectedProps, Provider } from 'react-redux';
 import store from "../state/store";
-import { globalState, Stage } from "../state/types";
+import { GlobalState, Stage } from "../state/types";
 import { NEXT_STAGE } from "../state/actions/stages";
 
 class App extends React.Component<Props, {}>  {
@@ -45,7 +45,7 @@ class App extends React.Component<Props, {}>  {
   }
 }
 
-function mapStateToProps(state: globalState) {
+function mapStateToProps(state: GlobalState) {
   return { stage: state.stage, activity: state.activity };
 }
 

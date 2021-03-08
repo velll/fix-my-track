@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { globalState } from '../state/types';
+import { GlobalState } from '../state/types';
 import { HighlightedCode } from './HighlightedCode';
 
 function Export(props: Props) {
@@ -24,7 +24,7 @@ function Export(props: Props) {
           </div>;
 }
 
-function mapStateToProps(state: globalState) {
+function mapStateToProps(state: GlobalState) {
   return { activity: state.activity?.processed };
 }
 

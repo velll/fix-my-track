@@ -1,10 +1,10 @@
 import { AnyAction, combineReducers, Reducer } from 'redux';
-import { globalState } from '../types';
+import { GlobalState } from '../types';
 
 import stage from './stage';
 import activity from './activity';
 
-const rootReducer: Reducer<globalState, AnyAction> = combineReducers({
+const rootReducer: Reducer<GlobalState, AnyAction> = combineReducers({
   stage: stage,
   activity: activity
 });
