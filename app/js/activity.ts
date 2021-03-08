@@ -12,6 +12,13 @@ class Activity {
     this.source = source;
   }
 
+  static empty() {
+    const emptyTotals = {name: '', time: 0};
+    const emptyLaps = [{trackpoints: []}];
+
+    return new Activity(emptyTotals, emptyLaps, '');
+  }
+
   static fromTCX(source: string) {
     const tcx = new TCX(source);
 
