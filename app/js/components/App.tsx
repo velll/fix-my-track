@@ -37,6 +37,7 @@ class App extends React.Component<Props, {}>  {
   processTrack(trackFile: string) {
     const activity = Activity.fromTCX(trackFile);
     this.props.saveProcessed(trackFile, activity);
+    this.props.nextStage();
   }
 
   public render() {

@@ -6,12 +6,14 @@ enum Stage {
   export
 }
 
-interface globalState {
-  stage: Stage,
-  activity: {
-    original: string,
-    processed: Activity
-  } | undefined
+interface ActivityState {
+  original: string,
+  processed: Activity
 }
 
-export { globalState, Stage };
+interface globalState {
+  stage: Stage,
+  activity: ActivityState
+}
+
+export { globalState, ActivityState, Stage };
