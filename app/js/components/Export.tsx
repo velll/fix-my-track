@@ -1,9 +1,10 @@
 import React from 'react';
-import { Activity } from '../activity';
+import { connect, ConnectedProps } from 'react-redux';
+import { globalState } from '../state/types';
 import { HighlightedCode } from './HighlightedCode';
 
 function Export(props: Props) {
-  const TCXContents = props.activity.toTCX();
+  const TCXContents = props.activity!.toTCX();
 
   const file = new Blob([TCXContents], {type: 'application/xml'});
   const href = URL.createObjectURL(file);
@@ -23,8 +24,13 @@ function Export(props: Props) {
           </div>;
 }
 
-interface Props {
-  activity: Activity
+function mapStateToProps(state: globalState) {
+  return { activity: state.activity?.processed };
 }
 
-export { Export };
+const connector = connect(mapStateToProps);
+
+interface Props extends ConnectedProps<typeof connector> {
+}
+
+export default connector(Export);

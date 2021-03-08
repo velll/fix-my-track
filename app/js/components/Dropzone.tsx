@@ -34,4 +34,4 @@ interface Props {
   onFileRead: (content: string) => void
 }
 
-export { Dropzone };
+export default Dropzone;
