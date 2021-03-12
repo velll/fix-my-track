@@ -26,6 +26,7 @@ function Dropzone(props: Props) {
     <div className='dropzone' {...getRootProps()}>
       <input {...getInputProps()} />
       <p>Drag 'n' drop tcx track here, or click to select files</p>
+      <p className='import-invitation'>or import a workout from <a href="#">strava</a></p>
     </div>
   );
 }
