@@ -6,13 +6,21 @@ const stageProgression = [Stage.start, Stage.show, Stage.export];
 function nextStage(stage: Stage) {
   const currentIndex = stageProgression.findIndex(progression => progression == stage);
 
-  return stageProgression[currentIndex + 1];
+  if (currentIndex == stageProgression.length - 1) {
+    return stage;
+  } else {
+    return stageProgression[currentIndex + 1];
+  }
 }
 
 function previousStage(stage: Stage) {
   const currentIndex = stageProgression.findIndex(progression => progression == stage);
 
-  return stageProgression[currentIndex - 1];
+  if (currentIndex == 0) {
+    return stage;
+  } else {
+    return stageProgression[currentIndex - 1];
+  }
 }
 
 const stageReducer: Reducer<Stage, AnyAction> = (state: Stage | undefined =  Stage.start, action: AnyAction): Stage => {
