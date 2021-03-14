@@ -9,6 +9,10 @@
 
     <link rel="stylesheet" href="https://openlayers.org/en/latest/css/ol.css" type="text/css">
     <link rel="stylesheet" href="index.css">
+
+    {{range $key, $val := .meta}}
+       <meta name="{{$key}}" content="{{$val}}" />
+    {{end}}
 </head> 
 <body>
 
@@ -33,6 +37,12 @@
         </div>
     </div>
 </nav>
+
+<div class="flash-container">
+    {{range $val := .flash}}
+        <div class="notification is-danger is-light">{{$val}}</div>
+    {{end}}
+</div>
 
 <div id="starter" class="app-container">
 </div>

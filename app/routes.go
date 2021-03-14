@@ -14,7 +14,8 @@ func Run() {
 
 	routes.LoadHTMLGlob("app/layouts/*")
 
-	routes.GET("/", controllers.Index)
+	routes.GET("/", controllers.Root)
+	routes.GET("/token", controllers.ExchangeStravaToken)
 
 	routes.Run()
 }
