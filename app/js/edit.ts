@@ -1,4 +1,4 @@
-import { Trackpoint } from "./activity";
+import { Trackpoint } from "./models/activity";
 import { replaceAt } from "./lib/array";
 
 class Edit {

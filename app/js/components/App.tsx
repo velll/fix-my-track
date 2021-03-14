@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Activity, Trackpoint } from "../activity";
+import { Activity, Trackpoint } from "../models/activity";
 
-import Dropzone from "./Dropzone";
+import Import from "./Import";
 import Track from "./Track";
 import Export from "./Export";
 
@@ -26,7 +26,7 @@ class App extends React.Component<Props, {}>  {
   componentFor(stage: Stage) {
     switch(stage) {
       case Stage.start:
-        return <Dropzone onFileRead={this.processTrack}></Dropzone>;
+        return <Import onFileRead={this.processTrack}></Import>;
       case Stage.show:
         return <Track/>;
       case Stage.export:

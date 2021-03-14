@@ -1,5 +1,5 @@
-import { Edit } from "./edit";
-import { TCX } from "./lib/tcx";
+import { Edit } from "../edit";
+import { TCX } from "../lib/tcx";
 
 class Activity {
   source: string;
@@ -23,6 +23,10 @@ class Activity {
     const tcx = new TCX(source);
 
     return new Activity(tcx.totals, tcx.laps, source);
+  }
+
+  static fromTrackpoints(totals: Totals, trackpoints: Trackpoint[]) {
+    return new Activity(totals, [{trackpoints: trackpoints}], '');
   }
 
   get trackpoints(): Trackpoint[] {

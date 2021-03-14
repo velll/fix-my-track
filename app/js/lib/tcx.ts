@@ -1,4 +1,4 @@
-import { Trackpoint, Lap, Totals } from '../activity';
+import { Trackpoint, Lap, Totals } from '../models/activity';
 import { getNodes } from './xpath';
 
 class TCX {

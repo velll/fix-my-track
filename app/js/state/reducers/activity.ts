@@ -1,5 +1,5 @@
 import { AnyAction, Reducer } from 'redux';
-import { Activity } from '../../activity';
+import { Activity } from '../../models/activity';
 import { ActivityState } from '../types';
 
 const activityReducer: Reducer<ActivityState, AnyAction> = (state: ActivityState | undefined, action: AnyAction): ActivityState => {

@@ -1,6 +1,6 @@
 
 import * as React from "react";
-import { Activity, buildTrackpoint, Trackpoint } from "../activity";
+import { Activity, buildTrackpoint, Trackpoint } from "../models/activity";
 import { InteractionHandler, InteractionHandlerExt } from "../map";
 import { Map } from "./Map";
 import { TrackStats } from "./TrackStats";

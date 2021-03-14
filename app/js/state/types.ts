@@ -1,4 +1,4 @@
-import { Activity } from "../activity";
+import { Activity } from "../models/activity";
 
 enum Stage {
   start,
