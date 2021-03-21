@@ -1,7 +1,7 @@
 Online editor for TCX files (GPS tracks with training extras).
 
-## Run
+## Build and Run
 ```
-PORT=8081 go run main.go
-yarn webpack serve
+$ docker-compose build
+$ docker-compose up -d
 ```
