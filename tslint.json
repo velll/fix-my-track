@@ -19,6 +19,7 @@
       "semicolon": [true, "always", "ignore-interfaces"],
       "triple-equals": false,
       "arrow-parens": [true, "ban-single-arg-parens"],
+      "eofline": true,
       "trailing-comma": [
           true,
           {
