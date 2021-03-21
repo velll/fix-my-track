@@ -1,6 +1,6 @@
 
 import * as React from "react";
-import { Activity, buildTrackpoint, Trackpoint } from "../activity";
+import { Activity, buildTrackpoint, Trackpoint } from "../models/activity";
 import { InteractionHandler, InteractionHandlerExt } from "../map";
 import { Map } from "./Map";
 import { TrackStats } from "./TrackStats";
@@ -8,7 +8,9 @@ import { TrackStats } from "./TrackStats";
 import './Track.css';
 import { TrackpointRow } from "./TrackpointRow";
 import { distanceBetween } from "../lib/distance";
-import { ExportButtons } from './ExportButtons';
+import ExportButtons from './ExportButtons';
+import { GlobalState } from "../state/types";
+import { connect, ConnectedProps } from "react-redux";
 
 class Track extends React.Component<Props, State>  {
   tableRef: React.RefObject<any>;
@@ -16,6 +18,7 @@ class Track extends React.Component<Props, State>  {
 
   constructor(props: Props) {
     super(props);
+
     this.state = {
       highlighted: -1,
       trackpoints: props.activity.trackpoints.map(trackpoint => [trackpoint.long, trackpoint.lat]),
@@ -32,6 +35,11 @@ class Track extends React.Component<Props, State>  {
       onDeSelected: () => (null),
       onMoved: this.registerMove.bind(this)
     };
+  }
+
+  componentDidMount() {
+    console.log('mounted track');
+    console.log(this.props.activity);
   }
 
   distance(point: number[], index: number, all: number[][]) {
@@ -63,18 +71,23 @@ class Track extends React.Component<Props, State>  {
   }
 
   save(){
-    this.props.activity.replaceTrackpoints(
-      this.props.activity.trackpoints.map((original, i) => buildTrackpoint(original, this.state.trackpoints[i]))
+    const activity = this.props.activity;
+
+    activity.replaceTrackpoints(
+      activity.trackpoints.map((original, i) => buildTrackpoint(original, this.state.trackpoints[i]))
     );
-    this.props.nextStep();
+
+    this.props.nextStage();
   }
 
   public render() {
+    const activity = this.props.activity;
+
     return  <div className="track">
               <Map trackpoints={this.state.trackpoints} handlers={this.mapInteractionHandlers}></Map>
 
               <div className="track-data">
-                <TrackStats sport={this.props.activity.totals.name} time={this.props.activity.totals.time}></TrackStats>
+                <TrackStats sport={activity.totals.name} time={activity.totals.time}></TrackStats>
 
                 <h2 className="title is-2">Trackpoints ({this.state.trackpoints.length})</h2>
                 <div className="trackpoint-list">
@@ -94,16 +107,10 @@ class Track extends React.Component<Props, State>  {
                   </table>
 
                 </div>
-                <ExportButtons goToExport={this.save}></ExportButtons>
+                <ExportButtons save={this.save}/>
               </div>
             </div>;
   }
-}
-
-interface Props {
-  activity: Activity,
-  replaceTrackpoint: (trackpointNo: number, trackpoint: Trackpoint) => void,
-  nextStep: () => void
 }
 
 interface State {
@@ -122,4 +129,18 @@ interface InteractionHandlers {
   onMoved: InteractionHandlerExt
 }
 
-export { Track, Extra, InteractionHandlers };
+function mapStateToProps(state: GlobalState) {
+  return { activity: state.activity!.processed };
+}
+
+const mapDispatch = {
+  nextStage: () => ({ type: 'NEXT_STAGE' })
+};
+
+const connector = connect(mapStateToProps, mapDispatch);
+
+interface Props extends ConnectedProps<typeof connector> {
+}
+
+export default connector(Track);
+export { Extra, InteractionHandlers };

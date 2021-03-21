@@ -6,16 +6,12 @@ html, body {
 }
 
 .navbar {
-  position: absolute;
-  top: 0;
   width: 100%;
 }
 
 .app-container {
   padding: 1em;
-  padding-top: 3.25rem;
   width: 100%;
-  height: 100%;
 
   display: flex;
   flex-direction: row;
@@ -28,4 +24,8 @@ html, body {
 
 .errors {
   margin-top: 0.5em;
+}
+
+.flash-container {
+  padding: 1rem;
 }

@@ -1,8 +1,13 @@
 div.dropzone {
+  max-width: 50%;
+  max-height: 50%;
+  margin: 0 auto;
+
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   padding: 20px;
   border-width: 2px;
   border-radius: 2px;
@@ -12,4 +17,9 @@ div.dropzone {
   color: #bdbdbd;
   outline: none;
   transition: border .24s ease-in-out;
+}
+
+.import-invitation {
+  padding-top: 0.5rem;
+  font-style: italic;
 }

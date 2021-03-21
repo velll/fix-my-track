@@ -11,6 +11,7 @@
     "@types/ol": "^6.4.2",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "@types/react-redux": "^7.1.16",
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^5.0.1",
     "foreman": "^3.0.1",
@@ -31,7 +32,9 @@
     "ol": "^6.5.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-dropzone": "^11.2.4"
+    "react-dropzone": "^11.2.4",
+    "react-redux": "^7.2.2",
+    "redux": "^4.0.5"
   },
   "scripts": {
     "start": "webpack serve"
