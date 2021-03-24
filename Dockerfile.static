@@ -1,15 +1,14 @@
+# Build (custom-built image with node and yarn - https://github.com/yarnpkg/yarn/blob/master/Dockerfile.dev)
+FROM yarn as build
+
+COPY . .
+RUN yarn install && yarn webpack
+
+# Run
 FROM nginx:latest
 
 EXPOSE 80
 
-RUN curl -fsSL https://deb.nodesource.com/setup_15.x | bash - && apt-get install -y nodejs
-RUN npm install --global yarn
-
-COPY . .
-
-RUN yarn install && yarn webpack
-
-COPY public/bundle/ /usr/share/nginx/html
+COPY --from=build public/bundle/ /usr/share/nginx/html
 RUN rm /usr/share/nginx/html/index.html
-
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build nginx.conf /etc/nginx/conf.d/default.conf

@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  static-http:
+    build:
+      context: .
+      dockerfile: Dockerfile.static
+    container_name: fix-my-track-static
+    ports:
+      - 127.0.0.1:8080:80
+    restart: always
+    depends_on:
+      - application-server
+
+  application-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    env_file: 
+      - server.env
+    container_name: fix-my-track-api
+    # Exposed port will be available on
+    # local docker network anyway
+    ports: []
+    restart: always

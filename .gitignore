@@ -5,6 +5,9 @@
 # Frontend assets
 public/bundle/**/*
 
+# Secrets
+server.env
+
 ### Go ###
 # Binaries for programs and plugins
 *.exe

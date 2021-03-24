@@ -1,0 +1,19 @@
+# Build
+FROM golang:latest as build
+
+EXPOSE 8080
+WORKDIR /go/src/app
+
+COPY . .
+
+RUN go build -o start
+
+# Run
+FROM debian:buster
+RUN mkdir -p /go/src/app
+RUN apt update && apt install -y ca-certificates openssl curl vim
+
+COPY --from=build /go/src/app/ /go/src/app/
+
+WORKDIR /go/src/app
+CMD ["./start"]
