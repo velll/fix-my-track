@@ -15,7 +15,11 @@ module.exports = {
       {
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
-      }
+      },
+      {
+        test: /\.erb$/i,
+        use: 'raw-loader',
+      },
     ]
   },
   resolve: {

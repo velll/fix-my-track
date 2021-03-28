@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { encode } from '../lib/tcx/encode';
 import { GlobalState } from '../state/types';
 import { HighlightedCode } from './HighlightedCode';
 
 function Export(props: Props) {
-  const TCXContents = props.activity!.toTCX();
+  const TCXContents = encode(props.activity);
 
   const file = new Blob([TCXContents], {type: 'application/xml'});
   const href = URL.createObjectURL(file);
