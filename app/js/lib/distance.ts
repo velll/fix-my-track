@@ -17,7 +17,7 @@ const totalDistace = (trackpoints: {lat: number, long: number}[]): number => {
     } else {
       const previous = trackpoints[currentIndex - 1];
 
-      return total + distanceBetween(fromLonLat([previous.long, previous.lat]), fromLonLat([current.long, current.lat]));
+      return total + distanceBetween([previous.long, previous.lat], [current.long, current.lat]);
     }
   }, 0);
 
@@ -32,7 +32,7 @@ const maxSpeed = (trackpoints: {lat: number, long: number, time: string}[]): num
       return 0;
     } else {
       const previous = trackpoints[currentIndex - 1];
-      const distance = distanceBetween(fromLonLat([previous.long, previous.lat]), fromLonLat([current.long, current.lat]));
+      const distance = distanceBetween([previous.long, previous.lat], [current.long, current.lat]);
       const time = differenceSeconds(new Date(previous.time), new Date(current.time));
 
       const speed = (distance / time);

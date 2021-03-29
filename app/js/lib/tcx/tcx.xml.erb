@@ -3,12 +3,12 @@
   <Activities>
     <Activity Sport="<%- activity.sport %>">
       <% activity.laps.forEach( lap => { %>
-        <Lap StartTime="<%- lap.trackpoints[0].time %>">
-          <TotalTimeSeconds><%- lap.totals.time %></TotalTimeSeconds>
-          <DistanceMeters><%- lap.totals.distance %></DistanceMeters>
-          <MaximumSpeed><%- lap.totals.maxSpeed %></MaximumSpeed>
-          <% if (lap.totals.calories) { %>
-          <Calories><%- lap.totals.calories %></Calories>
+        <Lap StartTime="<%- lap.startTime %>">
+          <TotalTimeSeconds><%- lap.time %></TotalTimeSeconds>
+          <DistanceMeters><%- lap.distance %></DistanceMeters>
+          <MaximumSpeed><%- lap.maxSpeed %></MaximumSpeed>
+          <% if (lap.calories) { %>
+          <Calories><%- lap.calories %></Calories>
           <% }; %>
           <Track>
             <% lap.trackpoints.forEach( trackpoint => { %>
@@ -21,7 +21,7 @@
                 <% if (trackpoint.altitude) { %>
                 <AltitudeMeters><%- trackpoint.altitude %></AltitudeMeters>
                 <% }; %>
-                <DistanceMeters>Total distance up to this point</DistanceMeters>
+                <DistanceMeters><%- trackpoint.distance %></DistanceMeters>
               <Trackpoint>
             <% }); %>
           </Track>
