@@ -1,0 +1,17 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+steps:
+- name: build
+  # this is an image created manually using
+  # https://github.com/yarnpkg/yarn/blob/master/Dockerfile.dev
+  image: yarn
+  pull: never
+  commands:
+  - yarn install
+  - yarn jest
+  - yarn build
+  environment:
+    LANG: "C.UTF-8"
