@@ -43,7 +43,8 @@ class TCX {
     return {
       time: parseFloat(lap.getElementsByTagName("TotalTimeSeconds")[0].textContent || '0'),
       distance: parseFloat(lap.getElementsByTagName("DistanceMeters")[0].textContent || '0'),
-      maxSpeed: parseFloat(lap.getElementsByTagName("MaximumSpeed")[0].textContent || '0')
+      maxSpeed: parseFloat(lap.getElementsByTagName("MaximumSpeed")[0].textContent || '0'),
+      calories: parseFloat(lap.getElementsByTagName("Calories")[0].textContent || '0')
     };
   }
 

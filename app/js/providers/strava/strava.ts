@@ -73,7 +73,14 @@ class Strava implements Provider {
       }
     ));
 
-    return new Activity(sport, [{ trackpoints: trackpoints, totals: aggregateTotals(trackpoints)}]);
+    return new Activity(sport,
+      [
+        {
+          trackpoints: trackpoints,
+          totals: aggregateTotals(trackpoints, {calories: calories})
+        }
+      ]
+    );
   }
 }
 

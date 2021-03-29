@@ -7,7 +7,9 @@
           <TotalTimeSeconds><%- lap.totals.time %></TotalTimeSeconds>
           <DistanceMeters><%- lap.totals.distance %></DistanceMeters>
           <MaximumSpeed><%- lap.totals.maxSpeed %></MaximumSpeed>
-          <Calories>Add total calories</Calories>
+          <% if (lap.totals.calories) { %>
+          <Calories><%- lap.totals.calories %></Calories>
+          <% }; %>
           <Track>
             <% lap.trackpoints.forEach( trackpoint => { %>
               <Trackpoint>

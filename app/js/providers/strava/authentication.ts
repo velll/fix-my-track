@@ -1,3 +1,5 @@
+import { Dict } from "../../lib/dict";
+
 const prefix = 'https://www.strava.com/oauth/authorize';
 
 const queryParams: Dict<string> = {
@@ -21,8 +23,6 @@ function clientId() {
   return document.getElementsByName('STRAVA_CLIENT_ID')[0].getAttribute('content');
 }
 
-interface Dict<T> {
-  [index:string]: T | null
-}
+
 
 export default authenticate;

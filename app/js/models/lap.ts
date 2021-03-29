@@ -1,24 +1,27 @@
 import { lastOf } from "../lib/array";
 import { differenceSeconds } from "../lib/date-helpers";
+import { Dict } from "../lib/dict";
 import { maxSpeed, totalDistace } from "../lib/distance";
 import { Trackpoint } from "./trackpoint";
 
 interface Lap {
   totals: Totals,
-  trackpoints: Trackpoint[]
+  trackpoints: Trackpoint[],
 }
 
 interface Totals {
   time: number,
   distance: number,
-  maxSpeed: number
+  maxSpeed: number,
+  calories?: number
 }
 
-function aggregateTotals(trackpoints: Trackpoint[]): Totals {
+function aggregateTotals(trackpoints: Trackpoint[], extras: Dict<string>): Totals {
   return {
     time: differenceSeconds(new Date(lastOf(trackpoints)!.time), new Date(trackpoints[0]!.time)),
     distance: totalDistace(trackpoints),
-    maxSpeed: maxSpeed(trackpoints)
+    maxSpeed: maxSpeed(trackpoints),
+    ...extras
   };
 }
 
