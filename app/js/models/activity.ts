@@ -1,5 +1,5 @@
 import { TCX } from "../lib/tcx";
-import { aggregateTotals, Lap } from "./lap";
+import { Lap } from "./lap";
 import { Trackpoint } from "./trackpoint";
 
 class Activity {
@@ -25,10 +25,6 @@ class Activity {
     const tcx = new TCX(source);
 
     return new Activity(tcx.sport, tcx.laps, source);
-  }
-
-  static fromTrackpoints(sport: string, trackpoints: Trackpoint[]) {
-    return new Activity(sport, [{trackpoints: trackpoints, totals: aggregateTotals(trackpoints)}]);
   }
 
   get trackpoints(): Trackpoint[] {

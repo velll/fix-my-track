@@ -16,7 +16,9 @@
                   <LatitudeDegrees><%- trackpoint.lat %></LatitudeDegrees>
                   <LatitudeDegrees><%- trackpoint.long %></LatitudeDegrees>
                 </Position>
-                <AltitudeMeters>Altitude goes here</AltitudeMeters>
+                <% if (trackpoint.altitude) { %>
+                <AltitudeMeters><%- trackpoint.altitude %></AltitudeMeters>
+                <% }; %>
                 <DistanceMeters>Total distance up to this point</DistanceMeters>
               <Trackpoint>
             <% }); %>

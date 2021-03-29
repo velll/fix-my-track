@@ -60,7 +60,8 @@ class TCX {
         lat: parseFloat(
                trackpoint.getElementsByTagName("Position")[0].getElementsByTagName("LatitudeDegrees")[0].textContent  || '0'),
         long: parseFloat(
-               trackpoint.getElementsByTagName("Position")[0].getElementsByTagName("LongitudeDegrees")[0].textContent  || '0')
+               trackpoint.getElementsByTagName("Position")[0].getElementsByTagName("LongitudeDegrees")[0].textContent  || '0'),
+        altitude: parseFloat(trackpoint.getElementsByTagName("AltitudeMeters")[0].textContent  || '0')
       };
     });
   }

@@ -4,6 +4,7 @@ import { Provider } from "../base";
 import { Activity } from "../../models/activity";
 import authenticate from "./authentication";
 import { addSeconds } from "../../lib/date-helpers";
+import { aggregateTotals } from "../../models/lap";
 
 const prefix = "https://www.strava.com/api/v3/";
 
@@ -46,26 +47,33 @@ class Strava implements Provider {
     ));
   }
 
+  streamByType(streams: any[], type: string){
+    return streams.filter(stream => stream.type == type)[0].data;
+  }
+
   async workout(id: number) {
     const activity = await this.fetch(`/activities/${id}`);
 
     const startDate = new Date((activity as any).start_date);
     const sport = (activity as any).type;
+    const calories = (activity as any).calories;
 
-    const streams = await this.fetch(`/activities/${id}/streams?keys=latlng,time`);
+    const streams = await this.fetch(`/activities/${id}/streams?keys=latlng,time,altitude`);
 
-    const coordinatesStream = (streams as any[]).filter(stream => stream.type == 'latlng')[0].data;
-    const timesStream = (streams as any[]).filter(stream => stream.type == 'time')[0].data;
+    const coordinatesStream = this.streamByType(streams, 'latlng');
+    const timesStream = this.streamByType(streams, 'time');
+    const altStream = this.streamByType(streams, 'altitude');
 
     const trackpoints = (coordinatesStream as number[][]).map((coordinates, index) => (
       {
         lat:  coordinates[0],
         long: coordinates[1],
-        time: addSeconds(startDate, timesStream[index]).toISOString()
+        time: addSeconds(startDate, timesStream[index]).toISOString(),
+        altitude: altStream[index]
       }
     ));
 
-    return Activity.fromTrackpoints(sport, trackpoints);
+    return new Activity(sport, [{ trackpoints: trackpoints, totals: aggregateTotals(trackpoints)}]);
   }
 }
 
