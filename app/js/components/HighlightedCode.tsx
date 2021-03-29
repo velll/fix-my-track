@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import highlight from 'highlight.js';
+import highlight from '../lib/highlight-xml';
 import 'highlight.js/styles/github-gist.css';
 
 class HighlightedCode extends React.Component<Props, {}>  {
