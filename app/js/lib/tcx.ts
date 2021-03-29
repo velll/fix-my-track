@@ -1,4 +1,5 @@
-import { Trackpoint, Lap, Totals } from '../models/activity';
+import { aggregateTotals, Lap } from '../models/lap';
+import { Trackpoint } from '../models/trackpoint';
 import { getNodes } from './xpath';
 
 class TCX {
@@ -17,7 +18,10 @@ class TCX {
     const lapElements = Array.from(this.activity.getElementsByTagName("Lap"));
 
     return lapElements.map(lapElement => (
-      { trackpoints: this.trackpointsOf(lapElement)}
+      {
+        trackpoints: this.trackpointsOf(lapElement),
+        totals: this.lapTotals(lapElement)
+      }
     ));
   }
 
@@ -25,7 +29,7 @@ class TCX {
     return this.laps[0].trackpoints;
   }
 
-  get activityName(): string {
+  get sport(): string {
     return this.activity.getAttribute('Sport') || '';
   }
 
@@ -35,8 +39,12 @@ class TCX {
     return parseInt(tag.textContent || '0', 10);
   }
 
-  get totals(): Totals {
-    return { time: this.totalTime, name: this.activityName };
+  public lapTotals(lap: Element) {
+    return {
+      time: parseFloat(lap.getElementsByTagName("TotalTimeSeconds")[0].textContent || '0'),
+      distance: parseFloat(lap.getElementsByTagName("DistanceMeters")[0].textContent || '0'),
+      maxSpeed: parseFloat(lap.getElementsByTagName("MaximumSpeed")[0].textContent || '0')
+    };
   }
 
   public trackpointsOf(lap: Element): Trackpoint[] {

@@ -1,6 +1,7 @@
 
 import * as React from "react";
-import { Activity, buildTrackpoint, Trackpoint } from "../models/activity";
+import { Activity } from "../models/activity";
+import { buildTrackpoint, Trackpoint } from "../models/trackpoint";
 import { InteractionHandler, InteractionHandlerExt } from "../map";
 import { Map } from "./Map";
 import { TrackStats } from "./TrackStats";
@@ -87,7 +88,7 @@ class Track extends React.Component<Props, State>  {
               <Map trackpoints={this.state.trackpoints} handlers={this.mapInteractionHandlers}></Map>
 
               <div className="track-data">
-                <TrackStats sport={activity.totals.name} time={activity.totals.time}></TrackStats>
+                <TrackStats sport={activity.sport} time={activity.totalTime}></TrackStats>
 
                 <h2 className="title is-2">Trackpoints ({this.state.trackpoints.length})</h2>
                 <div className="trackpoint-list">

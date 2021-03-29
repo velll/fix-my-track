@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TrainingCenterDatabase xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
   <Activities>
-    <Activity Sport="<%- activity.totals.name %>">
+    <Activity Sport="<%- activity.sport %>">
       <% activity.laps.forEach( lap => { %>
         <Lap StartTime="<%- lap.trackpoints[0].time %>">
-          <TotalTimeSeconds>Add lap time here</TotalTimeSeconds>
-          <DistanceMeters>Add total lap distance</DistanceMeters>
-          <MaximumSpeed>Add maximum speed</MaximumSpeed>
+          <TotalTimeSeconds><%- lap.totals.time %></TotalTimeSeconds>
+          <DistanceMeters><%- lap.totals.distance %></DistanceMeters>
+          <MaximumSpeed><%- lap.totals.maxSpeed %></MaximumSpeed>
           <Calories>Add total calories</Calories>
           <Track>
             <% lap.trackpoints.forEach( trackpoint => { %>

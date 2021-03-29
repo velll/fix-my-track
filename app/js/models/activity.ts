@@ -1,41 +1,42 @@
-import { Edit } from "../edit";
 import { TCX } from "../lib/tcx";
+import { aggregateTotals, Lap } from "./lap";
+import { Trackpoint } from "./trackpoint";
 
 class Activity {
+  sport: string;
   source: string;
   laps: Lap[];
-  totals: Totals;
 
-  constructor(totals: Totals, laps: Lap[], source: string) {
-    this.totals = totals;
+  static DEFAULT_SPORT = 'Running';
+
+  constructor(sport: string, laps: Lap[], source: string = '') {
+    this.sport = sport;
     this.laps = laps;
     this.source = source;
   }
 
   static empty() {
-    const emptyTotals = {name: '', time: 0};
-    const emptyLaps = [{trackpoints: []}];
+    const emptyLaps = [{trackpoints: [], totals: {time: 1, distance: 1, maxSpeed: 1 }}];
 
-    return new Activity(emptyTotals, emptyLaps, '');
+    return new Activity(Activity.DEFAULT_SPORT, emptyLaps);
   }
 
   static fromTCX(source: string) {
     const tcx = new TCX(source);
 
-    return new Activity(tcx.totals, tcx.laps, source);
+    return new Activity(tcx.sport, tcx.laps, source);
   }
 
-  static fromTrackpoints(totals: Totals, trackpoints: Trackpoint[]) {
-    return new Activity(totals, [{trackpoints: trackpoints}], '');
+  static fromTrackpoints(sport: string, trackpoints: Trackpoint[]) {
+    return new Activity(sport, [{trackpoints: trackpoints, totals: aggregateTotals(trackpoints)}]);
   }
 
   get trackpoints(): Trackpoint[] {
     return this.laps[0].trackpoints;
   }
 
-  applyEdit(edit: Edit): Activity {
-    this.laps[0].trackpoints = edit.apply(this.trackpoints);
-    return this;
+  get totalTime(): number {
+    return this.laps.reduce((total, lap) => (total + lap.totals.time), 0);
   }
 
   replaceTrackpoints(trackpoints: Trackpoint[]) {
@@ -49,27 +50,4 @@ class Activity {
   }
 }
 
-interface Trackpoint {
-  lat: number,
-  long: number,
-  time: string
-}
-
-function buildTrackpoint(original: Trackpoint, coordinates: number[]): Trackpoint {
-  return {
-    time: original.time,
-    long: coordinates![0],
-    lat: coordinates![1]
-  };
-}
-
-interface Lap {
-  trackpoints: Trackpoint[]
-}
-
-interface Totals {
-  name: string,
-  time: number
-}
-
-export { Activity, Trackpoint, buildTrackpoint, Lap, Totals };
+export { Activity };

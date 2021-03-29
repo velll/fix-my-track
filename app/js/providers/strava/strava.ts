@@ -3,6 +3,7 @@ import { get } from "../../api/request";
 import { Provider } from "../base";
 import { Activity } from "../../models/activity";
 import authenticate from "./authentication";
+import { addSeconds } from "../../lib/date-helpers";
 
 const prefix = "https://www.strava.com/api/v3/";
 
@@ -46,24 +47,25 @@ class Strava implements Provider {
   }
 
   async workout(id: number) {
-    const streams = await this.fetch(`/activities/${id}/streams?keys=latlng,time`);
+    const activity = await this.fetch(`/activities/${id}`);
 
-    console.log(streams);
+    const startDate = new Date((activity as any).start_date);
+    const sport = (activity as any).type;
+
+    const streams = await this.fetch(`/activities/${id}/streams?keys=latlng,time`);
 
     const coordinatesStream = (streams as any[]).filter(stream => stream.type == 'latlng')[0].data;
     const timesStream = (streams as any[]).filter(stream => stream.type == 'time')[0].data;
-
-    console.log(coordinatesStream);
 
     const trackpoints = (coordinatesStream as number[][]).map((coordinates, index) => (
       {
         lat:  coordinates[0],
         long: coordinates[1],
-        time: timesStream[index]
+        time: addSeconds(startDate, timesStream[index]).toISOString()
       }
     ));
 
-    return Activity.fromTrackpoints({name: 'whatever run', time: 1}, trackpoints);
+    return Activity.fromTrackpoints(sport, trackpoints);
   }
 }
 

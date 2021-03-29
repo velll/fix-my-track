@@ -1,11 +1,9 @@
 import * as React from "react";
-import { Activity, Trackpoint } from "../models/activity";
+import { Activity } from "../models/activity";
 
 import Import from "./Import";
 import Track from "./Track";
 import Export from "./Export";
-
-import { Edit } from "../edit";
 
 import { connect, ConnectedProps, Provider } from 'react-redux';
 import store from "../state/store";
