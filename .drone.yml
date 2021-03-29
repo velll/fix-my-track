@@ -4,7 +4,7 @@ type: docker
 name: default
 
 steps:
-- name: build
+- name: test
   # this is an image created manually using
   # https://github.com/yarnpkg/yarn/blob/master/Dockerfile.dev
   image: yarn
@@ -15,21 +15,55 @@ steps:
   - yarn build
   environment:
     LANG: "C.UTF-8"
-- name: deploy
+- name: build
   image: docker/compose:1.27.4
   environment:
-    STRAVA_CREDENTIALS:
-      from_secret: strava_credentials
+    STRAVA_CLIENT_ID:
+      from_secret: strava_client_id
+    STRAVA_CLIENT_SECRET:
+      from_secret: strava_client_secret
   commands:
-    - echo "$STRAVA_CREDENTIALS" > /drone/src/server.env
+    - echo "STRAVA_CLIENT_ID=$STRAVA_CLIENT_ID" >> /drone/src/server.env
+    - echo "STRAVA_CLIENT_SECRET=$STRAVA_CLIENT_SECRET" >> /drone/src/server.env
     - docker-compose -f /drone/src/docker-compose.yml build
-    - docker-compose -f /drone/src/docker-compose.yml down
-    - docker-compose -f /drone/src/docker-compose.yml up -d
   volumes:
     - name: dockersock
       path: /var/run/docker.sock
   depends_on:
     - build
+  when:
+    branch:
+    - master
+    status:
+    - success
+- name: copy files
+  image: appleboy/drone-scp
+  settings:
+    host: vps608404.ovh.net
+    username: track
+    key:
+      from_secret: track_ssh_key
+    target:
+      - /home/track/docker-compose.yml
+      - /home/track/server.env
+    source:
+      - docker-compose.yml
+      - server.env
+  when:
+    branch:
+    - master
+    status:
+    - success
+- name: start
+  image: appleboy/drone-ssh
+  settings:
+    host: vps608404.ovh.net
+    username: track
+    key:
+      from_secret: track_ssh_key
+    script:
+      - docker-compose down
+      - docker-compose up -d
   when:
     branch:
     - master
