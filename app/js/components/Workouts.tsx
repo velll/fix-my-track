@@ -2,7 +2,6 @@ import React from 'react';
 import Athlete from '../models/athlete';
 import Workout from '../models/workout';
 import Strava from '../providers/strava/strava';
-import Caller from './Caller';
 import WorkoutComponent from './Workout';
 import { NEXT_STAGE } from '../state/actions/stages';
 import { Activity } from '../models/activity';
