@@ -2,7 +2,7 @@
 FROM yarn as build
 
 COPY . .
-RUN yarn install && yarn webpack
+RUN yarn install && yarn build
 
 # Run
 FROM nginx:latest
