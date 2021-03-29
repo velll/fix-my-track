@@ -15,3 +15,28 @@ steps:
   - yarn build
   environment:
     LANG: "C.UTF-8"
+- name: deploy
+  image: docker/compose:1.27.4
+  environment:
+    STRAVA_CREDENTIALS:
+      from_secret: strava_credentials
+  commands:
+    - echo "$STRAVA_CREDENTIALS" > /drone/src/server.env
+    - docker-compose -f /drone/src/docker-compose.yml build
+    - docker-compose -f /drone/src/docker-compose.yml down
+    - docker-compose -f /drone/src/docker-compose.yml up -d
+  volumes:
+    - name: dockersock
+      path: /var/run/docker.sock
+  depends_on:
+    - build
+  when:
+    branch:
+    - master
+    status:
+    - success
+
+volumes:
+  - name: dockersock
+    host:
+      path: /var/run/docker.sock
