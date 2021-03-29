@@ -1,5 +1,6 @@
 .track {
   min-width: 90%;
+  max-height: calc(100vh - 6rem);
   margin: 0 auto;
 
   display: flex;

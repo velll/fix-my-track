@@ -1,5 +1,3 @@
-import * as ol from 'ol';
-
 import 'ol/ol.css';
 import GeoJSON from 'ol/format/GeoJSON';
 import Map from 'ol/Map';
@@ -11,21 +9,17 @@ import { defaults as defaultInteractions } from 'ol/interaction';
 import { lineStyle } from './styles';
 import { fit } from './helpers';
 import { interactions, InteractionHandlers, InteractionHandler, InteractionHandlerExt } from './interactions';
-
-(window as any).OpenLayers = ol;
+import { Collection } from 'ol';
 
 const setupMap = (target: string, route: any, options: MapSetupOptions) => {
   const features = new GeoJSON().readFeatures(route);
-  const featuresCollection = new ol.Collection(features);
+  const featuresCollection = new Collection(features);
   const vectorSource = new VectorSource({features: featuresCollection});
 
   const vectorLayer = new VectorLayer({
     source: vectorSource,
     style: lineStyle
   });
-
-  (window as any).features = features;
-  (window as any).vectorLayer = vectorLayer;
 
   const customInteractions = interactions(featuresCollection, options.interactionHandlers);
 

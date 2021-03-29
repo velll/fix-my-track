@@ -1,7 +1,6 @@
 import Feature from 'ol/Feature';
 import { Modify, Select, Interaction, Snap } from 'ol/interaction';
 import { toLonLat } from 'ol/proj';
-import { pointerMove } from 'ol/events/condition';
 import LineString from 'ol/geom/LineString';
 import { Collection } from 'ol';
 import { isSame } from './helpers';
