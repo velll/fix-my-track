@@ -30,13 +30,13 @@ steps:
     - name: dockersock
       path: /var/run/docker.sock
   depends_on:
-    - build
+    - test
   when:
     branch:
     - master
     status:
     - success
-- name: copy files
+- name: copy
   image: appleboy/drone-scp
   settings:
     host: vps608404.ovh.net
@@ -49,6 +49,8 @@ steps:
     source:
       - docker-compose.yml
       - server.env
+  depends_on:
+    - build
   when:
     branch:
     - master
@@ -64,6 +66,8 @@ steps:
     script:
       - docker-compose down
       - docker-compose up -d
+  depends_on:
+    - copy
   when:
     branch:
     - master
