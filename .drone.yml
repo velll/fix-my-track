@@ -36,26 +36,6 @@ steps:
     - master
     status:
     - success
-- name: copy
-  image: appleboy/drone-scp
-  settings:
-    host: vps608404.ovh.net
-    username: track
-    key:
-      from_secret: track_ssh_key
-    target:
-      - /home/track/docker-compose.yml
-      - /home/track/server.env
-    source:
-      - docker-compose.yml
-      - server.env
-  depends_on:
-    - build
-  when:
-    branch:
-    - master
-    status:
-    - success
 - name: start
   image: appleboy/drone-ssh
   settings:
@@ -67,7 +47,7 @@ steps:
       - docker-compose down
       - docker-compose up -d
   depends_on:
-    - copy
+    - build
   when:
     branch:
     - master
