@@ -16,4 +16,5 @@ RUN apt update && apt install -y ca-certificates openssl curl vim
 COPY --from=build /go/src/app/ /go/src/app/
 
 WORKDIR /go/src/app
+ENV GIN_MODE=release
 CMD ["./start"]
