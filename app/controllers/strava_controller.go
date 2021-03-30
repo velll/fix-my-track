@@ -26,6 +26,6 @@ func ExchangeStravaToken(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("strava-token", token.AccessToken, 60*60*24, "/", "localhost", true, false)
+	c.SetCookie("strava-token", token.AccessToken, 60*60*24, "/", c.Request.Host, true, false)
 	Index(c)
 }
