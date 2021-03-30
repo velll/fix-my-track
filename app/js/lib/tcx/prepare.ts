@@ -1,5 +1,5 @@
 import { Activity } from "../../models/activity";
-import { Lap as ActivityLap } from "../../models/lap";
+import { aggregateTotals, Lap as ActivityLap } from "../../models/lap";
 import { Trackpoint } from "../../models/trackpoint";
 import { distanceBetween } from "../distance";
 
@@ -11,11 +11,14 @@ function prepare(activity: Activity): PreparedActivity {
 }
 
 function prepareLap(lap: ActivityLap): PreparedLap {
+  const totals = aggregateTotals(lap.trackpoints);
+
   return {
-    time: lap.totals.time,
-    distance: lap.totals.distance,
-    maxSpeed: lap.totals.maxSpeed,
+    time: totals.time,
+    distance: totals.distance,
+    maxSpeed: totals.maxSpeed,
     startTime: lap.trackpoints[0].time,
+    calories: lap.totals.calories,
     trackpoints: prepareTrackpoints(lap.trackpoints)
   };
 }
@@ -54,6 +57,7 @@ interface PreparedLap {
   distance: number,
   maxSpeed: number,
   startTime: string,
+  calories?: number,
   trackpoints: PreparedTrackpoint[]
 }
 

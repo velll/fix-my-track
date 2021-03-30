@@ -16,7 +16,7 @@ interface Totals {
   calories?: number
 }
 
-function aggregateTotals(trackpoints: Trackpoint[], extras: Dict<string>): Totals {
+function aggregateTotals(trackpoints: Trackpoint[], extras: Dict<string> = {}): Totals {
   return {
     time: differenceSeconds(new Date(lastOf(trackpoints)!.time), new Date(trackpoints[0]!.time)),
     distance: totalDistace(trackpoints),
