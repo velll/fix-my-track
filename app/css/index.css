@@ -29,3 +29,8 @@ html, body {
 .flash-container {
   padding: 0.25rem 0.5rem 0.5rem;
 }
+
+.about {
+  margin: 1rem auto;
+  max-width: 50%;
+}

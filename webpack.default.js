@@ -32,6 +32,7 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         { from: 'app/css', to: '.'},
+        { from: 'public/static', to: '.'},
         // { from: 'static'}
       ],
     }),
