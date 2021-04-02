@@ -1,10 +1,18 @@
+import { startWaiting, stopWaiting } from "../state/helpers/waits";
+
 async function get(url: string, headers = {}) {
   console.log(`GET ${url}`);
 
-  const response = await fetch(url, {mode: 'cors', headers: headers} );
-  const json = await response.json();
+  startWaiting();
 
-  return {status: response.status, json: json};
+  try {
+    const response = await fetch(url, {mode: 'cors', headers: headers} );
+    const json = await response.json();
+
+    return {status: response.status, json: json};
+  } finally {
+    stopWaiting();
+  }
 }
 
 interface Params {

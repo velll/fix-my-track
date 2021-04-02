@@ -21,12 +21,6 @@ class Activity {
     return new Activity(Activity.DEFAULT_SPORT, emptyLaps);
   }
 
-  static fromTCX(source: string) {
-    const tcx = new TCX(source);
-
-    return new Activity(tcx.sport, tcx.laps, source);
-  }
-
   get trackpoints(): Trackpoint[] {
     return this.laps[0].trackpoints;
   }

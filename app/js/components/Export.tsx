@@ -1,28 +1,41 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { encode } from '../lib/tcx/encode';
+import { waiting } from '../state/helpers/waits';
 import { GlobalState } from '../state/types';
 import { HighlightedCode } from './HighlightedCode';
 
-function Export(props: Props) {
-  const TCXContents = encode(props.activity);
+class Export extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {};
+  }
 
-  const file = new Blob([TCXContents], {type: 'application/xml'});
-  const href = URL.createObjectURL(file);
+  @waiting
+  componentDidMount() {
+    const TCXContents = encode(this.props.activity);
 
-  return  <div className="container">
-            <h2 className='title is-2 is-spaced'>Export adjusted tcx</h2>
+    const file = new Blob([TCXContents], {type: 'application/xml'});
+    const href = URL.createObjectURL(file);
 
-            <div className='buttons'>
-              <a href={href} className="button is-primary" download="processed.tcx">Download</a>
-            </div>
+    this.setState({href: href, tcx: TCXContents, blob: file});
+  }
 
-            <div>
-              <HighlightedCode language="xml">
-                {TCXContents}
-              </HighlightedCode>
-            </div>
-          </div>;
+  render() {
+    return  <div className="container">
+              <h2 className='title is-2 is-spaced'>Export adjusted tcx</h2>
+
+              <div className='buttons'>
+                <a href={this.state.href} className="button is-primary" download="processed.tcx">Download</a>
+              </div>
+
+              <div>
+                <HighlightedCode language="xml">
+                  {this.state.tcx}
+                </HighlightedCode>
+              </div>
+            </div>;
+  }
 }
 
 function mapStateToProps(state: GlobalState) {
@@ -32,6 +45,12 @@ function mapStateToProps(state: GlobalState) {
 const connector = connect(mapStateToProps);
 
 interface Props extends ConnectedProps<typeof connector> {
+}
+
+interface State {
+  href?: string;
+  tcx? :string;
+  blob?: Blob;
 }
 
 export default connector(Export);

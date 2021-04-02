@@ -9,6 +9,7 @@ import { connect, ConnectedProps, Provider } from 'react-redux';
 import store from "../state/store";
 import { GlobalState, Stage } from "../state/types";
 import { NEXT_STAGE } from "../state/actions/stages";
+import { decode as decodeTCX } from "../lib/tcx/decode";
 
 class App extends React.Component<Props, {}>  {
   constructor(props: Props) {
@@ -33,7 +34,7 @@ class App extends React.Component<Props, {}>  {
   }
 
   processTrack(trackFile: string) {
-    const activity = Activity.fromTCX(trackFile);
+    const activity = decodeTCX(trackFile);
     this.props.saveProcessed(trackFile, activity);
     this.props.nextStage();
   }

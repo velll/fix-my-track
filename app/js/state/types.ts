@@ -13,7 +13,8 @@ interface ActivityState {
 
 interface GlobalState {
   stage: Stage,
-  activity: ActivityState
+  activity: ActivityState,
+  waits: number
 }
 
 export { GlobalState, ActivityState, Stage };

@@ -12,6 +12,7 @@ import { distanceBetween } from "../lib/distance";
 import ExportButtons from './ExportButtons';
 import { GlobalState } from "../state/types";
 import { connect, ConnectedProps } from "react-redux";
+import { waiting } from "../state/helpers/waits";
 
 class Track extends React.Component<Props, State>  {
   tableRef: React.RefObject<any>;
@@ -71,6 +72,7 @@ class Track extends React.Component<Props, State>  {
     }));
   }
 
+  @waiting
   save(){
     const activity = this.props.activity;
 
