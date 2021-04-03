@@ -32,12 +32,6 @@ class Activity {
   replaceTrackpoints(trackpoints: Trackpoint[]) {
     this.laps[0].trackpoints = trackpoints;
   }
-
-  toTCX(){
-    const tcx = new TCX(this.source);
-
-    return tcx.modify(0, this.trackpoints);
-  }
 }
 
 export { Activity };
