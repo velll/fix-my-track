@@ -10,6 +10,7 @@ import store from "../state/store";
 import { GlobalState, Stage } from "../state/types";
 import { NEXT_STAGE } from "../state/actions/stages";
 import { decode as decodeTCX } from "../lib/tcx/decode";
+import { SAVE_PROCESSED_ACTIVITY } from "../state/actions/activities";
 
 class App extends React.Component<Props, {}>  {
   constructor(props: Props) {
@@ -35,7 +36,7 @@ class App extends React.Component<Props, {}>  {
 
   processTrack(trackFile: string) {
     const activity = decodeTCX(trackFile);
-    this.props.saveProcessed(trackFile, activity);
+    this.props.saveProcessed(activity, trackFile);
     this.props.nextStage();
   }
 
@@ -50,13 +51,7 @@ function mapStateToProps(state: GlobalState) {
 
 const mapDispatch = {
   nextStage: () => NEXT_STAGE,
-  saveProcessed: (original: string, processed: Activity) => (
-    {
-      type: 'SAVE_PROCESSED_ACTIVITY',
-      original: original,
-      processed: processed
-    }
-  )
+  saveProcessed: SAVE_PROCESSED_ACTIVITY
 };
 
 const connector = connect(mapStateToProps, mapDispatch);

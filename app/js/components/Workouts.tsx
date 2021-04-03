@@ -6,6 +6,7 @@ import WorkoutComponent from './Workout';
 import { NEXT_STAGE } from '../state/actions/stages';
 import { Activity } from '../models/activity';
 import { connect, ConnectedProps } from 'react-redux';
+import { SAVE_PROCESSED_ACTIVITY } from '../state/actions/activities';
 
 class Workouts extends React.Component<Props, State> {
 
@@ -63,18 +64,11 @@ interface State {
   workouts: Workout[]
 }
 
-
 const mapStateToProps = () => ({});
 
 const mapDispatch = {
   nextStage: () => NEXT_STAGE,
-  saveProcessed: (processed: Activity) => (
-    {
-      type: 'SAVE_PROCESSED_ACTIVITY',
-      original: '',
-      processed: processed
-    }
-  )
+  saveProcessed: SAVE_PROCESSED_ACTIVITY
 };
 
 const connector = connect(mapStateToProps, mapDispatch);
