@@ -1,0 +1,60 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+steps:
+- name: test
+  # this is an image created manually using
+  # https://github.com/yarnpkg/yarn/blob/master/Dockerfile.dev
+  image: yarn
+  pull: never
+  commands:
+  - yarn install
+  - yarn jest
+  - yarn build
+  environment:
+    LANG: "C.UTF-8"
+- name: build
+  image: docker/compose:1.27.4
+  environment:
+    STRAVA_CLIENT_ID:
+      from_secret: strava_client_id
+    STRAVA_CLIENT_SECRET:
+      from_secret: strava_client_secret
+  commands:
+    - echo "STRAVA_CLIENT_ID=$STRAVA_CLIENT_ID" >> /drone/src/server.env
+    - echo "STRAVA_CLIENT_SECRET=$STRAVA_CLIENT_SECRET" >> /drone/src/server.env
+    - docker-compose -f /drone/src/docker-compose.yml build
+  volumes:
+    - name: dockersock
+      path: /var/run/docker.sock
+  depends_on:
+    - test
+  when:
+    branch:
+    - master
+    status:
+    - success
+- name: start
+  image: appleboy/drone-ssh
+  settings:
+    host: vps608404.ovh.net
+    username: track
+    key:
+      from_secret: track_ssh_key
+    script:
+      - docker-compose down
+      - docker-compose up -d
+  depends_on:
+    - build
+  when:
+    branch:
+    - master
+    status:
+    - success
+
+volumes:
+  - name: dockersock
+    host:
+      path: /var/run/docker.sock

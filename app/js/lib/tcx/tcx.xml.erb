@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TrainingCenterDatabase xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+  <Activities>
+    <Activity Sport="<%- activity.sport %>">
+      <% activity.laps.forEach( lap => { %>
+        <Lap StartTime="<%- lap.startTime %>">
+          <TotalTimeSeconds><%- lap.time %></TotalTimeSeconds>
+          <DistanceMeters><%- lap.distance %></DistanceMeters>
+          <MaximumSpeed><%- lap.maxSpeed %></MaximumSpeed>
+          <% if (lap.calories) { %>
+          <Calories><%- lap.calories %></Calories>
+          <% }; %>
+          <Track>
+            <% lap.trackpoints.forEach( trackpoint => { %>
+              <Trackpoint>
+                <Time><%- trackpoint.time %></Time>
+                <Position>
+                  <LatitudeDegrees><%- trackpoint.lat %></LatitudeDegrees>
+                  <LongitudeDegrees><%- trackpoint.long %></LongitudeDegrees>
+                </Position>
+                <% if (trackpoint.altitude) { %>
+                <AltitudeMeters><%- trackpoint.altitude %></AltitudeMeters>
+                <% }; %>
+                <DistanceMeters><%- trackpoint.distance %></DistanceMeters>
+              <Trackpoint>
+            <% }); %>
+          </Track>
+        </Lap>
+      <% }); %>
+    </Activity>
+  </Activities>
+</TrainingCenterDatabase>

@@ -1,24 +1,56 @@
 import React from 'react';
-import { Activity } from '../activity';
+import { connect, ConnectedProps } from 'react-redux';
+import { encode } from '../lib/tcx/encode';
+import { waiting } from '../state/helpers/waits';
+import { GlobalState } from '../state/types';
+import { HighlightedCode } from './HighlightedCode';
 
-function Export(props: Props) {
-  const TCXContents = props.activity.toTCX();
+class Export extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {};
+  }
 
-  const file = new Blob([TCXContents], {type: 'application/xml'});
-  const href = URL.createObjectURL(file);
+  @waiting
+  componentDidMount() {
+    const TCXContents = encode(this.props.activity);
 
-  return <div className="container">
-          <a href={href} download="processed.tcx">Download</a>
-          <div>Exporting!</div>
-          <div>
-            {TCXContents}
-          </div>
+    const file = new Blob([TCXContents], {type: 'application/xml'});
+    const href = URL.createObjectURL(file);
 
-        </div>;
+    this.setState({href: href, tcx: TCXContents, blob: file});
+  }
+
+  render() {
+    return  <div className="container">
+              <h2 className='title is-2 is-spaced'>Export adjusted tcx</h2>
+
+              <div className='buttons'>
+                <a href={this.state.href} className="button is-primary" download="processed.tcx">Download</a>
+              </div>
+
+              <div>
+                <HighlightedCode language="xml">
+                  {this.state.tcx}
+                </HighlightedCode>
+              </div>
+            </div>;
+  }
 }
 
-interface Props {
-  activity: Activity
+function mapStateToProps(state: GlobalState) {
+  return { activity: state.activity?.processed };
 }
 
-export { Export };
+const connector = connect(mapStateToProps);
+
+interface Props extends ConnectedProps<typeof connector> {
+}
+
+interface State {
+  href?: string;
+  tcx? :string;
+  blob?: Blob;
+}
+
+export default connector(Export);

@@ -1,19 +1,22 @@
 import * as React from "react";
-import { Activity, Trackpoint } from "../activity";
-import { Dropzone } from "./Dropzone";
-import { Track } from "./Track";
+import { Activity } from "../models/activity";
 
-import { Edit } from "../edit";
-import { Export } from "./Export";
+import Import from "./Import";
+import Track from "./Track";
+import Export from "./Export";
 
-class App extends React.Component<Props, State>  {
+import { connect, ConnectedProps, Provider } from 'react-redux';
+import store from "../state/store";
+import { GlobalState, Stage } from "../state/types";
+import { NEXT_STAGE } from "../state/actions/stages";
+import { decode as decodeTCX } from "../lib/tcx/decode";
+import { SAVE_PROCESSED_ACTIVITY } from "../state/actions/activities";
+
+class App extends React.Component<Props, {}>  {
   constructor(props: Props) {
     super(props);
-    this.state = {activity: null, trackFile: null, stage: Stage.start};
 
     this.processTrack = this.processTrack.bind(this);
-    this.replaceTrackpoint = this.replaceTrackpoint.bind(this);
-    this.goToExport = this.goToExport.bind(this);
   }
 
   public async componentDidMount() {
@@ -23,56 +26,37 @@ class App extends React.Component<Props, State>  {
   componentFor(stage: Stage) {
     switch(stage) {
       case Stage.start:
-        return <Dropzone onFileRead={this.processTrack}></Dropzone>;
+        return <Import onFileRead={this.processTrack}></Import>;
       case Stage.show:
-        return <Track activity={this.state.activity!} replaceTrackpoint={this.replaceTrackpoint} nextStep={this.goToExport}></Track>;
+        return <Track/>;
       case Stage.export:
-        return <Export activity={this.state.activity!}></Export>;
+        return <Export/>;
     }
   }
 
   processTrack(trackFile: string) {
-    this.setState(_ => ({
-      stage: Stage.show,
-      trackFile: trackFile,
-      activity: Activity.fromTCX(trackFile)
-    }));
-  }
-
-  replaceTrackpoint(trackpointNo: number, trackpoint: Trackpoint) {
-    this.setState(state => ({
-      stage: state.stage,
-      trackFile: state.trackFile,
-      activity: state.activity!.applyEdit(new Edit(trackpointNo, trackpoint))
-    }));
-  }
-
-  goToExport() {
-    this.setState(state => ({
-      stage: Stage.export,
-      trackFile: state.trackFile,
-      activity: state.activity
-    }));
+    const activity = decodeTCX(trackFile);
+    this.props.saveProcessed(activity, trackFile);
+    this.props.nextStage();
   }
 
   public render() {
-   return this.componentFor(this.state.stage);
+    return this.componentFor(this.props.stage);
   }
 }
 
-interface Props {
+function mapStateToProps(state: GlobalState) {
+  return { stage: state.stage, activity: state.activity };
 }
 
-interface State {
-  trackFile: string | null,
-  activity: Activity | null,
-  stage: Stage
+const mapDispatch = {
+  nextStage: () => NEXT_STAGE,
+  saveProcessed: SAVE_PROCESSED_ACTIVITY
+};
+
+const connector = connect(mapStateToProps, mapDispatch);
+
+interface Props extends ConnectedProps<typeof connector> {
 }
 
-enum Stage {
-  start,
-  show,
-  export
-}
-
-export { App };
+export default connector(App);

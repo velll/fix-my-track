@@ -1,26 +1,29 @@
-import { Trackpoint, Lap, Totals } from '../activity';
 import { firstChild } from 'xml-wrappers';
 import { select } from 'xml-wrappers';
+
+import { aggregateTotals, Lap } from '../models/lap';
+import { Trackpoint } from '../models/trackpoint';
 
 class TCX {
   source: string;
   xmldoc: Document;
-  activity: Element;
+  activityElement: Element;
 
   constructor(source: string) {
     this.source = source;
 
     this.xmldoc = new DOMParser().parseFromString(source, "text/xml");
-    this.activity = this.xmldoc.getElementsByTagName("Activity")[0];
+    this.activityElement = this.xmldoc.getElementsByTagName("Activity")[0];
   }
 
   get laps(): Lap[]{
-    // const lapNodes = Array.from(this.xmldoc.getElementsByTagName('Lap'))
-    const lapNodes = select(this.xmldoc, "//ns:Activity/ns:Lap");
-    console.log(lapNodes)
+    const lapElements = Array.from(this.activityElement.getElementsByTagName("Lap"));
 
-    return lapNodes.map(lapNode => (
-      { trackpoints: this.trackpointsOf(lapNode).filter(pos => pos.lat && pos.long) }
+    return lapElements.map(lapElement => (
+      {
+        trackpoints: this.trackpointsOf(lapElement),
+        totals: this.lapTotals(lapElement)
+      }
     ));
   }
 
@@ -28,62 +31,43 @@ class TCX {
     return this.laps[0].trackpoints;
   }
 
-  get activityName(): string {
-    return this.activity.getAttribute('Sport') || '';
+  get sport(): string {
+    return this.activityElement.getAttribute('Sport') || '';
   }
 
   get totalTime(): number {
-    const tag = this.activity.getElementsByTagName('TotalTimeSeconds')[0];
+    const tag = this.activityElement.getElementsByTagName('TotalTimeSeconds')[0];
 
     return parseInt(tag.textContent || '0', 10);
   }
 
-  get totals(): Totals {
-    return { time: this.totalTime, name: this.activityName };
+  public lapTotals(lap: Element) {
+    return {
+      time: parseFloat(lap.getElementsByTagName("TotalTimeSeconds")[0].textContent || '0'),
+      distance: parseFloat(lap.getElementsByTagName("DistanceMeters")[0].textContent || '0'),
+      maxSpeed: parseFloat(lap.getElementsByTagName("MaximumSpeed")[0].textContent || '0'),
+      calories: parseFloat(lap.getElementsByTagName("Calories")[0]?.textContent || '0')
+    };
   }
 
-  positionCoordinates(context: Node): {lat: number, long: number} {
-    const latNode = firstChild(context, 'LatitudeDegrees');
-    const lat = latNode ? latNode.textContent || '0' : '0';
+  public trackpointsOf(lap: Element): Trackpoint[] {
+    const trackElement = lap.getElementsByTagName("Track")[0];
+    const allTrackpointElements = Array.from(trackElement.getElementsByTagName("Trackpoint"));
 
-    const longNode = firstChild(context, 'LongitudeDegrees');
-    const long = longNode ? longNode.textContent || '0' : '0';
+    const trackpointElements = allTrackpointElements.filter(element => (
+      element.getElementsByTagName("Position")[0] && element.getElementsByTagName("Time")[0]
+    ));
 
-    return {lat: parseFloat(lat), long: parseFloat(long)};
-  }
-
-  trackpointsOf(lap: Node): Trackpoint[] {
-    const trackpointNodes = select(this.xmldoc, '//ns:Track/ns:Trackpoint').map(node => (
-      {
-        timeNode: firstChild(node, 'Time'),
-        positionNode: firstChild(node, 'Position')
-      })).filter(({timeNode, positionNode}) => timeNode && positionNode);
-
-     return trackpointNodes.map(({timeNode, positionNode}) => (
-      {
-        time: timeNode!.textContent || '',
-        ...this.positionCoordinates(positionNode!)
-      }
-     ));
-  }
-
-  modify(lap: number, trackpoints: {long: number, lat: number}[]) {
-    if (trackpoints.length != this.trackpoints.length) {
-      throw new Error('Inconsistent trackpoints length');
-    }
-
-    const latNodes = select(this.xmldoc, "//ns:Trackpoint/ns:Position/ns:LatitudeDegrees");
-    const lonNodes = select(this.xmldoc, "//ns:Trackpoint/ns:Position/ns:LongitudeDegrees");
-
-    latNodes.forEach((node, i) => {
-      node!.textContent = trackpoints[i].lat.toString();
+    return trackpointElements.map((trackpoint: Element) => {
+      return {
+        time: trackpoint.getElementsByTagName("Time")[0].textContent || '',
+        lat: parseFloat(
+               trackpoint.getElementsByTagName("Position")[0].getElementsByTagName("LatitudeDegrees")[0].textContent  || '0'),
+        long: parseFloat(
+               trackpoint.getElementsByTagName("Position")[0].getElementsByTagName("LongitudeDegrees")[0].textContent  || '0'),
+        altitude: parseFloat(trackpoint.getElementsByTagName("AltitudeMeters")[0].textContent  || '0')
+      };
     });
-
-    lonNodes.forEach((node, i) => {
-      node!.textContent = trackpoints[i].long.toString();
-    });
-
-    return new XMLSerializer().serializeToString(this.xmldoc.documentElement);
   }
 }
 

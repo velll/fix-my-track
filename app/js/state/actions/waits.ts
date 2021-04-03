@@ -1,0 +1,4 @@
+const START_WAITING = { type: 'START_WAITING' };
+const STOP_WAITING = { type: 'STOP_WAITING' };
+
+export { START_WAITING, STOP_WAITING };

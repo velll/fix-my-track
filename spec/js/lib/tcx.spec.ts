@@ -10,7 +10,7 @@ const initialize = (examplePath: string) => {
 test('Can parse a basic stub of a TCX track', () => {
   const tcx = initialize('spec/js/examples/tcx.example.xml')
   
-  expect(tcx.activityName).toEqual('Running');
+  expect(tcx.sport).toEqual('Running');
   
   expect(tcx.laps.length).toBe(1);
   expect(tcx.trackpoints.length).toBe(1);
@@ -24,7 +24,7 @@ test('Can parse a basic stub of a TCX track', () => {
 test('Can parse a long TCX track', () => {
   const tcx = initialize('spec/js/examples/tcx.example.long.xml')
   
-  expect(tcx.activityName).toEqual('Running');
+  expect(tcx.sport).toEqual('Running');
   
   expect(tcx.laps.length).toBe(1);
   expect(tcx.trackpoints.length).toBe(1921);

@@ -1,6 +1,6 @@
 import {fromLonLat} from 'ol/proj';
 
-function singleLine(points: Point[]): {} {
+function singleLine(points: number[][]): {} {
   return {
     "type": "FeatureCollection",
     "features": [
@@ -8,7 +8,7 @@ function singleLine(points: Point[]): {} {
         'type': 'Feature',
         'geometry': {
           'type': 'LineString',
-          'coordinates': points.map(point => fromLonLat([point.long, point.lat]))
+          'coordinates': points.map(point => fromLonLat(point))
         }
       }
     ]
