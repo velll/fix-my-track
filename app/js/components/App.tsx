@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Activity } from "../models/activity";
+import { notify } from '../state/helpers/flash-messages';
 
 import Import from "./Import";
 import Track from "./Track";
@@ -36,8 +37,13 @@ class App extends React.Component<Props, {}>  {
 
   processTrack(trackFile: string) {
     const activity = decodeTCX(trackFile);
-    this.props.saveProcessed(activity, trackFile);
-    this.props.nextStage();
+
+    if (activity) {
+      this.props.saveProcessed(activity, trackFile);
+      this.props.nextStage();
+    } else {
+      notify('Cannot parse tcx file. Check if the track file is valid');
+    }
   }
 
   public render() {

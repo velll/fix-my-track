@@ -6332,10 +6332,10 @@ xml-name-validator@^3.0.0:
   resolved "https://registry.yarnpkg.com/xml-name-validator/-/xml-name-validator-3.0.0.tgz#6ae73e06de4d8c6e47f9fb181f78d648ad457c6a"
   integrity sha512-A5CUptxDsvxKJEU3yO6DuWBSJz/qizqzJKOMIfUJHETbBw/sFaDxgd6fxm1ewUaM0jZ444Fc5vC5ROYurg/4Pw==
 
-xml-wrappers@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/xml-wrappers/-/xml-wrappers-0.1.1.tgz#185ae0c04ed6028ebd81e0df9d7611c8753820da"
-  integrity sha512-oRr7f5EORRbOoAisGvJ2gc84p9NWb2OEvxo/dQvtrZkItiEzXl73OIKqMTMjd1hX/aKwyl0JffVpR4m0B697jA==
+xml-wrappers@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/xml-wrappers/-/xml-wrappers-0.1.3.tgz#6137e1d0a5eab99f5d3696fe4be6029660ebf6b0"
+  integrity sha512-4eRsrLAdqYUtr/h1Rb+QZxy3AQjpo7pF//pOmfxAmvqTtkn7ZFJVjMDeSGwz38YXrFZj1+lAqVwwo0eFNV97yA==
 
 xmlchars@^2.2.0:
   version "2.2.0"

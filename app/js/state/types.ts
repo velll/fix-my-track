@@ -11,10 +11,16 @@ interface ActivityState {
   processed: Activity
 }
 
+interface Message {
+  text: string
+}
+
 interface GlobalState {
   stage: Stage,
   activity: ActivityState,
-  waits: number
+  waits: number,
+  flashMessages: Message[]
 }
 
-export { GlobalState, ActivityState, Stage };
+
+export { GlobalState, ActivityState, Message, Stage };

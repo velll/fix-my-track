@@ -1,4 +1,3 @@
-import { TCX } from "../lib/tcx";
 import { Lap } from "./lap";
 import { Trackpoint } from "./trackpoint";
 
