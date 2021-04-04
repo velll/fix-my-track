@@ -1,20 +1,22 @@
 import React, {useCallback} from 'react';
 import {useDropzone} from 'react-dropzone';
+import { notify } from '../state/helpers/flash-messages';
 import { startWaiting, stopWaiting } from '../state/helpers/waits';
 import './Dropzone.css';
 
 function Dropzone(props: Props) {
   const onDrop = useCallback(acceptedFiles => {
     acceptedFiles.forEach((file: Blob) => {
+      assertSize(file);
       const reader = new FileReader();
 
       reader.onabort = () => {
         stopWaiting();
-        console.log('file reading was aborted');
+        console.warn('file reading was aborted');
       };
       reader.onerror = () => {
         stopWaiting();
-        console.log('file reading has failed');
+        console.error('file reading has failed');
       };
       reader.onload = () => {
         const str = (reader.result as string);
@@ -37,6 +39,16 @@ function Dropzone(props: Props) {
       <p className='import-invitation'>or import a workout from <a onClick={props.toggleSource}>strava</a></p>
     </div>
   );
+}
+
+const MEGABYTE = 2 ** 20;
+const SIZE_LIMIT = 10 * MEGABYTE;
+
+function assertSize(file: Blob) {
+  if (file.size > SIZE_LIMIT) {
+    notify(`This file is ${Math.floor(file.size/MEGABYTE)} MB. That's a bit too large for a tcx track, sorry`);
+    throw new Error('File size too large');
+  }
 }
 
 interface Props {
