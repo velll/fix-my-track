@@ -12,6 +12,7 @@ html, body {
 .app-container {
   padding: 1em;
   width: 100%;
+  height: calc(100vh - 4rem);
 
   display: flex;
   flex-direction: column;
