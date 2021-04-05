@@ -1,8 +1,5 @@
 
-import * as React from "react";
-import { Activity } from "../models/activity";
-import { buildTrackpoint, Trackpoint } from "../models/trackpoint";
-import { InteractionHandler, InteractionHandlerExt } from "../map";
+import React from "react";
 import { Map } from "./Map";
 import { TrackStats } from "./TrackStats";
 
@@ -10,140 +7,55 @@ import './Track.css';
 import { TrackpointRow } from "./TrackpointRow";
 import { distanceBetween } from "../lib/distance";
 import ExportButtons from './ExportButtons';
-import { GlobalState } from "../state/types";
-import { connect, ConnectedProps } from "react-redux";
-import { waiting } from "../state/helpers/waits";
+import { Activity } from "../models/activity";
+import { Extra, InteractionHandlers } from "./TrackContainer";
 
-class Track extends React.Component<Props, State>  {
-  tableRef: React.RefObject<any>;
-  mapInteractionHandlers: InteractionHandlers;
 
-  constructor(props: Props) {
-    super(props);
+function Track(props: Props) {
+  const activity = props.activity;
 
-    this.state = {
-      highlighted: -1,
-      trackpoints: props.activity.trackpoints.map(trackpoint => [trackpoint.long, trackpoint.lat]),
-      extras: props.activity.trackpoints.map(trackpoint => ({time: trackpoint.time}))
-    };
+  return  <div className="track">
+            <Map trackpoints={props.trackpoints} handlers={props.mapInteractionHandlers}></Map>
 
-    this.tableRef = React.createRef();
+            <div className="track-data">
+              <TrackStats sport={activity.sport} time={activity.totalTime}></TrackStats>
 
-    this.focusTrackpoint = this.focusTrackpoint.bind(this);
-    this.save = this.save.bind(this);
+              <h2 className="title is-2">Trackpoints ({props.trackpoints.length})</h2>
+              <div className="trackpoint-list">
+                <table className="table is-hoverable" ref={props.tableRef}>
+                  <tbody>
+                    {
+                      props.trackpoints.map((point, i, allPoints) => (
+                        <TrackpointRow index={i}
+                                        key={i}
+                                        coordinates={point}
+                                        extra={props.extras[i]}
+                                        distanceInc={distance(point, i, allPoints)}
+                                        highlighted={props.highlighted == i} ></TrackpointRow>
+                      ))
+                    }
+                  </tbody>
+                </table>
 
-    this.mapInteractionHandlers = {
-      onSelected: this.focusTrackpoint.bind(this),
-      onDeSelected: () => (null),
-      onMoved: this.registerMove.bind(this)
-    };
-  }
-
-  componentDidMount() {
-    console.log('mounted track');
-    console.log(this.props.activity);
-  }
-
-  distance(point: number[], index: number, all: number[][]) {
-    return index == 0 ? 0 : distanceBetween(point, all[index - 1]);
-  }
-
-  tableRow(trackpointNo: number) {
-    return this.tableRef.current!.getElementsByTagName('tr')[trackpointNo];
-  }
-
-  focusTrackpoint(trackpointNo: number) {
-    this.highlight(trackpointNo);
-    this.scrollTo(trackpointNo);
-  }
-
-  scrollTo(trackpointNo: number) {
-    this.tableRow(trackpointNo).scrollIntoView({block: "center"});
-  }
-
-  highlight(trackpointNo: number) {
-    this.setState({ highlighted: trackpointNo });
-  }
-
-  registerMove(coordinates: number[][]) {
-    this.setState(state => ({
-      ...state,
-      trackpoints: coordinates
-    }));
-  }
-
-  @waiting
-  save(){
-    const activity = this.props.activity;
-
-    activity.replaceTrackpoints(
-      activity.trackpoints.map((original, i) => buildTrackpoint(original, this.state.trackpoints[i]))
-    );
-
-    this.props.nextStage();
-  }
-
-  public render() {
-    const activity = this.props.activity;
-
-    return  <div className="track">
-              <Map trackpoints={this.state.trackpoints} handlers={this.mapInteractionHandlers}></Map>
-
-              <div className="track-data">
-                <TrackStats sport={activity.sport} time={activity.totalTime}></TrackStats>
-
-                <h2 className="title is-2">Trackpoints ({this.state.trackpoints.length})</h2>
-                <div className="trackpoint-list">
-                  <table className="table is-hoverable" ref={this.tableRef}>
-                    <tbody>
-                      {
-                        this.state.trackpoints.map((point, i, allPoints) => (
-                          <TrackpointRow index={i}
-                                         key={i}
-                                         coordinates={point}
-                                         extra={this.state.extras[i]}
-                                         distanceInc={this.distance(point, i, allPoints)}
-                                         highlighted={this.state.highlighted == i} ></TrackpointRow>
-                        ))
-                      }
-                    </tbody>
-                  </table>
-
-                </div>
-                <ExportButtons save={this.save}/>
               </div>
-            </div>;
-  }
+              <ExportButtons save={props.save}/>
+            </div>
+          </div>;
+
 }
 
-interface State {
+function distance(point: number[], index: number, all: number[][]) {
+  return index == 0 ? 0 : distanceBetween(point, all[index - 1]);
+}
+
+interface Props {
+  activity: Activity,
+  mapInteractionHandlers: InteractionHandlers,
   highlighted: number,
   trackpoints: number[][],
-  extras: Extra[]
+  extras: Extra[],
+  tableRef: React.RefObject<any>,
+  save: () => void
 }
 
-interface Extra {
-  time: string
-}
-
-interface InteractionHandlers {
-  onSelected: InteractionHandler,
-  onDeSelected: InteractionHandler,
-  onMoved: InteractionHandlerExt
-}
-
-function mapStateToProps(state: GlobalState) {
-  return { activity: state.activity!.processed };
-}
-
-const mapDispatch = {
-  nextStage: () => ({ type: 'NEXT_STAGE' })
-};
-
-const connector = connect(mapStateToProps, mapDispatch);
-
-interface Props extends ConnectedProps<typeof connector> {
-}
-
-export default connector(Track);
-export { Extra, InteractionHandlers };
+export default Track;

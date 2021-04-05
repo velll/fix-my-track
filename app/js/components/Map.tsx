@@ -3,7 +3,7 @@ import { Coordinate } from "ol/coordinate";
 import * as React from "react";
 import { singleLine, points } from "../lib/geoJSON";
 import { setupMap } from "../map";
-import { InteractionHandlers } from './Track';
+import { InteractionHandlers } from './TrackContainer';
 
 class Map extends React.Component<Props, State>  {
   constructor(props: Props) {

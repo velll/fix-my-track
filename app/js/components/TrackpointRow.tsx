@@ -1,7 +1,7 @@
 import React from 'react';
 import { round } from '../lib/round';
 import { Coordinate } from "ol/coordinate";
-import { Extra } from "./Track";
+import { Extra } from "./TrackContainer";
 
 function TrackpointRow({index, coordinates, extra, distanceInc, highlighted}: Props) {
   return (

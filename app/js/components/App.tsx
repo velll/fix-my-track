@@ -1,9 +1,9 @@
-import * as React from "react";
+import React from "react";
 import { Activity } from "../models/activity";
 import { notify } from '../state/helpers/flash-messages';
 
 import Import from "./Import";
-import Track from "./Track";
+import Track from "./TrackContainer";
 import Export from "./Export";
 
 import { connect, ConnectedProps, Provider } from 'react-redux';
