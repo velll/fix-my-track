@@ -9,12 +9,11 @@ import { connect, ConnectedProps } from 'react-redux';
 import { SAVE_PROCESSED_ACTIVITY } from '../state/actions/activities';
 
 class Workouts extends React.Component<Props, State> {
-
   provider: Strava;
 
   constructor(props: Props) {
     super(props);
-    this.state = {workouts: [], athlete: {name: 'Not authorized'}};
+    this.state = {workouts: []};
     this.provider = new Strava();
 
     this.chooseWorkout = this.chooseWorkout.bind(this);
@@ -25,7 +24,6 @@ class Workouts extends React.Component<Props, State> {
     const workouts = await this.provider.workouts();
 
     this.setState({athlete: athlete, workouts: workouts });
-
   }
 
   workoutList() {
@@ -41,26 +39,33 @@ class Workouts extends React.Component<Props, State> {
   }
 
   async chooseWorkout(id: number) {
-    console.log(`chose workout ${id}`);
-
     const workoutDetails = await this.provider.workout(id);
-
-    console.log(workoutDetails);
 
     this.props.saveProcessed(workoutDetails);
     this.props.nextStage();
   }
 
+  title() {
+    if (this.state.athlete) {
+      return <h2 className="title">{this.state.athlete.name} workouts</h2>;
+    } else {
+      return  <div>
+                <h2 className="title">Not authorized</h2>
+                <small>You will be redirected to Strava login page shortly</small>
+              </div>;
+    }
+  }
+
   render() {
     return  <div>
-              <h2 className="title">{this.state.athlete.name} workouts</h2>
+              {this.title()}
               {this.workoutList()}
             </div>;
   }
 }
 
 interface State {
-  athlete: Athlete
+  athlete?: Athlete
   workouts: Workout[]
 }
 
