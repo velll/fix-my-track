@@ -5,12 +5,14 @@ import stage from './stage';
 import activity from './activity';
 import waits from './waits';
 import flashMessages from './flash-messages';
+import sourceReducer from './source';
 
 const rootReducer: Reducer<GlobalState, AnyAction> = combineReducers({
   stage: stage,
   activity: activity,
   waits: waits,
-  flashMessages: flashMessages
+  flashMessages: flashMessages,
+  source: sourceReducer
 });
 
 export default rootReducer;
